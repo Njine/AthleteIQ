@@ -1,0 +1,10 @@
+flask
+flask_bcrypt
+flask_cors
+python-dotenv
+Werkzeug
+# requests-oauthlib
+# python-oauth2  # or oauth
+# oauthlib
+# oauth
+uuid
