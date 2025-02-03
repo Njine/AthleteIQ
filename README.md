@@ -1,8 +1,7 @@
-# AthleteIQ
-# Athletics Coaching dApp
+# AthleteIQ Coaching dApp
 
 ## Overview
-The **Athletics Coaching dApp** is a decentralized application designed to help athletes track their performance, manage training data, and receive AI-powered insights while ensuring data privacy through zero-knowledge proofs (ZKPs). The platform leverages blockchain technology for secure storage, smart contracts for reward distribution, and a tokenized incentive system to gamify training.
+**AthleteIQ** is a decentralized application designed to help athletes track their performance, manage training data, and receive AI-powered insights while ensuring data privacy through zero-knowledge proofs (ZKPs). The platform leverages blockchain technology for secure storage, smart contracts for reward distribution, and a tokenized incentive system to gamify training.
 
 ## Features
 ### 1. Athlete Profile Management
@@ -86,24 +85,24 @@ pnpm install
 
 2. Run a local network in the first terminal:
 
-```
-yarn chain
+```bash
+pnpm chain
 ```
 
 This command starts a local Ethereum network that runs on your local machine and can be used for testing and development. Learn how to [customize your network configuration](https://docs.scaffoldeth.io/quick-start/environment#1-initialize-a-local-blockchain).
 
 3. On a second terminal, deploy the test contract:
 
-```
-yarn deploy
+```bash
+pnpm deploy
 ```
 
 This command deploys a test smart contract to the local network. You can find more information about how to customize your contract and deployment script in our [documentation](https://docs.scaffoldeth.io/quick-start/environment#2-deploy-your-smart-contract).
 
 4. On a third terminal, start your NextJS app:
 
-```
-yarn start
+```bash
+pnpm start
 ```
 
 Visit your app on: `http://localhost:3000`.
