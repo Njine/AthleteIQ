@@ -7,6 +7,7 @@ contract AthleteProfile {
     struct Athlete {
         string name;
         uint256 age;
+        string sex; // Added sex/gender field
         string sport;
         uint256 height; // in centimeters
         uint256 weight; // in kilograms
@@ -20,15 +21,25 @@ contract AthleteProfile {
     address[] public athleteAddresses;
 
     // Event to emit when a profile is created or updated
-    event ProfileUpdated(address indexed athlete, string name, uint256 age, string sport, uint256 height, uint256 weight, string country);
+    event ProfileUpdated(
+        address indexed athlete,
+        string name,
+        uint256 age,
+        string sex,
+        string sport,
+        uint256 height,
+        uint256 weight,
+        string country
+    );
 
-    // add your zk-proof verification key
+    // zk-proof verification key (replace with your actual key)
     bytes32 public constant VERIFICATION_KEY = 0x...;
 
     /**
      * @dev Creates or updates an athlete's profile using zk-proof.
      * @param _name The athlete's name.
      * @param _age The athlete's age.
+     * @param _sex The athlete's sex/gender.
      * @param _sport The sport the athlete participates in.
      * @param _height The athlete's height in centimeters.
      * @param _weight The athlete's weight in kilograms.
@@ -38,6 +49,7 @@ contract AthleteProfile {
     function setProfileWithZkProof(
         string memory _name,
         uint256 _age,
+        string memory _sex,
         string memory _sport,
         uint256 _height,
         uint256 _weight,
@@ -48,7 +60,7 @@ contract AthleteProfile {
         require(verifyZkProof(_proof), "Invalid zk-proof");
 
         // Create or update the athlete's profile
-        athletes[msg.sender] = Athlete(_name, _age, _sport, _height, _weight, _country);
+        athletes[msg.sender] = Athlete(_name, _age, _sex, _sport, _height, _weight, _country);
 
         // Add the athlete's address to the list if it's not already there
         if (!isAthlete(msg.sender)) {
@@ -56,7 +68,16 @@ contract AthleteProfile {
         }
 
         // Emit an event for the profile update
-        emit ProfileUpdated(msg.sender, _name, _age, _sport, _height, _weight, _country);
+        emit ProfileUpdated(
+            msg.sender,
+            _name,
+            _age,
+            _sex,
+            _sport,
+            _height,
+            _weight,
+            _country
+        );
     }
 
     /**
@@ -66,7 +87,7 @@ contract AthleteProfile {
     function verifyZkProof(bytes memory _proof) internal pure returns (bool) {
         // Placeholder for zk-proof verification logic
         // Replace with actual verification using SnarkJS or a similar library
-        return true;
+        return true; // Replace with actual verification logic
     }
 
     /**
@@ -77,6 +98,7 @@ contract AthleteProfile {
         string memory,
         uint256,
         string memory,
+        string memory,
         uint256,
         uint256,
         string memory
@@ -85,6 +107,7 @@ contract AthleteProfile {
         return (
             athlete.name,
             athlete.age,
+            athlete.sex,
             athlete.sport,
             athlete.height,
             athlete.weight,
@@ -105,51 +128,5 @@ contract AthleteProfile {
      */
     function getTotalAthletes() public view returns (uint256) {
         return athleteAddresses.length;
-    }
-}
-    function createAthlete(
-        string memory _name,
-        uint256 _age,
-        string memory _sport,
-        uint256 _height,
-        uint256 _weight,
-        string memory _country
-    ) public {
-        Athlete memory newAthlete = Athlete(
-            _name,
-            _age,
-            _sport,
-            _height,
-            _weight,
-            _country
-        );
-        athletes.push(newAthlete);
-    }
-
-    function getAthlete(uint256 _index)
-        public
-        view
-        returns (
-            string memory,
-            uint256,
-            string memory,
-            uint256,
-            uint256,
-            string memory
-        )
-    {
-        Athlete memory athlete = athletes[_index];
-        return (
-            athlete.name,
-            athlete.age,
-            athlete.sport,
-            athlete.height,
-            athlete.weight,
-            athlete.country
-        );
-    }
-
-    function getAthletesCount() public view returns (uint256) {
-        return athletes.length;
     }
 }
