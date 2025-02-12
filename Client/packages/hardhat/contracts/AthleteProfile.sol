@@ -7,7 +7,7 @@ contract AthleteProfile {
     struct Athlete {
         string name;
         uint256 age;
-        string sex; // Added sex/gender field
+        string sex;
         string sport;
         uint256 height; // in centimeters
         uint256 weight; // in kilograms
@@ -33,7 +33,7 @@ contract AthleteProfile {
     );
 
     // zk-proof verification key (replace with your actual key)
-    bytes32 public constant VERIFICATION_KEY = 0x...;
+    bytes32 public constant VERIFICATION_KEY = 0x5b38da6a701c568545dcfcb03fcb875f56beddc4000000000000000000000000;
 
     /**
      * @dev Creates or updates an athlete's profile using zk-proof.
@@ -47,46 +47,62 @@ contract AthleteProfile {
      * @param _proof The zk-proof for authentication.
      */
     function setProfileWithZkProof(
-        string memory _name,
+        string calldata _name,
         uint256 _age,
-        string memory _sex,
-        string memory _sport,
+        string calldata _sex,
+        string calldata _sport,
         uint256 _height,
         uint256 _weight,
-        string memory _country,
-        bytes memory _proof
+        string calldata _country,
+        bytes calldata _proof
     ) public {
         // Verify the zk-proof
         require(verifyZkProof(_proof), "Invalid zk-proof");
 
-        // Create or update the athlete's profile
-        athletes[msg.sender] = Athlete(_name, _age, _sex, _sport, _height, _weight, _country);
+        // Check if the profile already exists
+        Athlete storage athlete = athletes[msg.sender];
+        if (
+            keccak256(bytes(athlete.name)) != keccak256(bytes(_name)) ||
+            athlete.age != _age ||
+            keccak256(bytes(athlete.sex)) != keccak256(bytes(_sex)) ||
+            keccak256(bytes(athlete.sport)) != keccak256(bytes(_sport)) ||
+            athlete.height != _height ||
+            athlete.weight != _weight ||
+            keccak256(bytes(athlete.country)) != keccak256(bytes(_country))
+        ) {
+            // Update the profile only if data has changed
+            athlete.name = _name;
+            athlete.age = _age;
+            athlete.sex = _sex;
+            athlete.sport = _sport;
+            athlete.height = _height;
+            athlete.weight = _weight;
+            athlete.country = _country;
 
-        // Add the athlete's address to the list if it's not already there
+            // Emit an event for the profile update
+            emit ProfileUpdated(
+                msg.sender,
+                _name,
+                _age,
+                _sex,
+                _sport,
+                _height,
+                _weight,
+                _country
+            );
+        }
+
+        // Add the athlete's address to the list if it's a new profile
         if (!isAthlete(msg.sender)) {
             athleteAddresses.push(msg.sender);
         }
-
-        // Emit an event for the profile update
-        emit ProfileUpdated(
-            msg.sender,
-            _name,
-            _age,
-            _sex,
-            _sport,
-            _height,
-            _weight,
-            _country
-        );
     }
 
     /**
      * @dev Verifies the zk-proof.
-     * @param _proof The zk-proof to verify.
      */
-    function verifyZkProof(bytes memory _proof) internal pure returns (bool) {
+    function verifyZkProof(bytes memory /*_proof*/) internal pure returns (bool) {
         // Placeholder for zk-proof verification logic
-        // Replace with actual verification using SnarkJS or a similar library
         return true; // Replace with actual verification logic
     }
 

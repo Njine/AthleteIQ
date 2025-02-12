@@ -1,55 +1,25 @@
-import { expect } from "chai";
 import { ethers } from "hardhat";
 
-describe("AthleteProfile", function () {
-    let AthleteProfile: any;
-    let athleteProfile: any;
-    let owner: any;
-    let addr1: any;
+async function main() {
+  // Get the contract factory
+  const AthleteProfile = await ethers.getContractFactory("AthleteProfile");
 
-    beforeEach(async function () {
-        [owner, addr1] = await ethers.getSigners();
+  // Deploy the contract
+  console.log("Deploying AthleteProfile...");
+  const athleteProfile = await AthleteProfile.deploy();
 
-        AthleteProfile = await ethers.getContractFactory("AthleteProfile");
-        athleteProfile = await AthleteProfile.deploy();
-        await athleteProfile.deployed();
-    });
+  // Wait for the deployment to complete
+  await athleteProfile.waitForDeployment();
 
-    it("Should create a profile", async function () {
-        await athleteProfile.setProfileWithZkProof(
-            "Eliud Kipchoge",
-            38,
-            "Male",
-            "Marathon",
-            167,
-            52,
-            "Kenya",
-            "0x" // Mock zk-proof
-        );
+  // Get the deployed contract address
+  const contractAddress = await athleteProfile.getAddress();
+  console.log("AthleteProfile deployed to:", contractAddress);
+}
 
-        const profile = await athleteProfile.getProfile(owner.address);
-        expect(profile.name).to.equal("Eliud Kipchoge");
-        expect(profile.age).to.equal(38);
-        expect(profile.sex).to.equal("Male");
-        expect(profile.sport).to.equal("Marathon");
-        expect(profile.height).to.equal(167);
-        expect(profile.weight).to.equal(52);
-        expect(profile.country).to.equal("Kenya");
-    });
-
-    it("Should return the total number of athletes", async function () {
-        await athleteProfile.setProfileWithZkProof(
-            "Eliud Kipchoge",
-            38,
-            "Male",
-            "Marathon",
-            167,
-            52,
-            "Kenya",
-            "0x" // Mock zk-proof
-        );
-
-        const totalAthletes = await athleteProfile.getTotalAthletes();
-        expect(totalAthletes).to.equal(1);
-    });
-});
+// Run the deployment script
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
