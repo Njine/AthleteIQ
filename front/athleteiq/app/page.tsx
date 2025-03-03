@@ -34,11 +34,11 @@ export default function LandingPage() {
   return (
     <div className="w-full overflow-x-hidden">
       <div
-        className="flex min-h-screen flex-col bg-cover bg-center bg-no-repeat bg-fixed text font-dmsans"
+        className="flex min-h-screen flex-col bg-cover bg-center bg-no-repeat text font-dmsans"
         style={{ backgroundImage: "url('/bg1.png')", backgroundSize: "cover", backgroundPosition: "top" }}
       >
         <Header />
-        <div className="w-[600px] ml-40 mt-24 font-poppins flex flex-col gap-8"
+        <div className="w-[600px] ml-40 py-12 mt-24 font-poppins flex flex-col gap-8"
         style={{backgroundImage: "url('/Basketball.png')", backgroundSize: "cover", backgroundPosition: "center"}}>
         <p className="text-8xl font-bold gradient-text">OWN YOUR TRAINING. OWN YOUR FUTURE.</p>
           <p className="text-3xl font-bold gradient-text">AI-Powered. Blockchain-Secured.</p>
