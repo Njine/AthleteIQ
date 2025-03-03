@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link"
-import Image from "next/image"
+import Link from "next/link";
+import Image from "next/image";
 import {
   Shield,
   Award,
@@ -16,8 +16,8 @@ import {
   Clock,
   Heart,
   Activity,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Header from "@/components/ui/header";
 
 export default function LandingPage() {
@@ -32,14 +32,18 @@ export default function LandingPage() {
   //   return () => window.removeEventListener("scroll", handleScroll);
   // }, []);
   return (
-    <div
-      className="flex min-h-screen flex-col bg-cover bg-center bg-no-repeat bg-fixed text font-dmsans"
-      style={{ backgroundImage: "url('/bg1.png')" }}
-    >
-    <Header/>
-
-
-
+    <div className="w-full overflow-x-hidden">
+      <div
+        className="flex min-h-screen flex-col bg-cover bg-center bg-no-repeat bg-fixed text font-dmsans"
+        style={{ backgroundImage: "url('/bg1.png')", backgroundSize: "cover", backgroundPosition: "top" }}
+      >
+        <Header />
+        <div className="w-[600px] ml-40 mt-24 font-poppins flex flex-col gap-8"
+        style={{backgroundImage: "url('/Basketball.png')", backgroundSize: "cover", backgroundPosition: "center"}}>
+        <p className="text-8xl font-bold gradient-text">OWN YOUR TRAINING. OWN YOUR FUTURE.</p>
+          <p className="text-3xl font-bold gradient-text">AI-Powered. Blockchain-Secured.</p>
+        </div>
+      </div>
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-muted">
           <div className="container px-4 md:px-6">
@@ -52,8 +56,9 @@ export default function LandingPage() {
                   Own Your Training Data with Blockchain & AI
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  A privacy-focused AI coaching app for athletes based on web3 tech with wide integration with existing
-                  ecosystems and smart watches for maximum compatibility.
+                  A privacy-focused AI coaching app for athletes based on web3
+                  tech with wide integration with existing ecosystems and smart
+                  watches for maximum compatibility.
                 </p>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button size="lg" className="gap-1">
@@ -105,11 +110,16 @@ export default function LandingPage() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">Key Features</div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Train Smarter, Compete Harder</h2>
+                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
+                  Key Features
+                </div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  Train Smarter, Compete Harder
+                </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our platform combines the power of blockchain technology and artificial intelligence to revolutionize
-                  how athletes train, compete, and own their data.
+                  Our platform combines the power of blockchain technology and
+                  artificial intelligence to revolutionize how athletes train,
+                  compete, and own their data.
                 </p>
               </div>
             </div>
@@ -120,8 +130,9 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-bold">Get Sponsorships</h3>
                 <p className="text-muted-foreground">
-                  Upload your metrics and our AI model will predict your performance in upcoming races, helping you get
-                  recognized and earn sponsorships.
+                  Upload your metrics and our AI model will predict your
+                  performance in upcoming races, helping you get recognized and
+                  earn sponsorships.
                 </p>
               </div>
               <div className="flex flex-col items-start gap-2">
@@ -130,8 +141,9 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-bold">Athlete-Centric Training</h3>
                 <p className="text-muted-foreground">
-                  Create decentralized athlete profiles to track progress securely and store performance metrics,
-                  training history, and personal bests—forever.
+                  Create decentralized athlete profiles to track progress
+                  securely and store performance metrics, training history, and
+                  personal bests—forever.
                 </p>
               </div>
               <div className="flex flex-col items-start gap-2">
@@ -140,18 +152,22 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-bold">AI-Powered Analytics</h3>
                 <p className="text-muted-foreground">
-                  Get real-time insights and feedback from AI/ML models analyzing your running times, heart rate, and
-                  endurance while keeping data private using zkML.
+                  Get real-time insights and feedback from AI/ML models
+                  analyzing your running times, heart rate, and endurance while
+                  keeping data private using zkML.
                 </p>
               </div>
               <div className="flex flex-col items-start gap-2">
                 <div className="rounded-lg bg-primary/10 p-2">
                   <Trophy className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold">Immutable Competition Tracking</h3>
+                <h3 className="text-xl font-bold">
+                  Immutable Competition Tracking
+                </h3>
                 <p className="text-muted-foreground">
-                  Record lap times, scores, and event results immutably on the blockchain with IoT & GPS integrations
-                  for seamless, real-time updates.
+                  Record lap times, scores, and event results immutably on the
+                  blockchain with IoT & GPS integrations for seamless, real-time
+                  updates.
                 </p>
               </div>
               <div className="flex flex-col items-start gap-2">
@@ -160,33 +176,45 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-bold">Tokenized Rewards</h3>
                 <p className="text-muted-foreground">
-                  Earn Iten tokens for completing training goals & competitions, unlock exclusive NFT achievements, and
-                  climb global leaderboards.
+                  Earn Iten tokens for completing training goals & competitions,
+                  unlock exclusive NFT achievements, and climb global
+                  leaderboards.
                 </p>
               </div>
               <div className="flex flex-col items-start gap-2">
                 <div className="rounded-lg bg-primary/10 p-2">
                   <Lock className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold">Privacy-First Data Sharing</h3>
+                <h3 className="text-xl font-bold">
+                  Privacy-First Data Sharing
+                </h3>
                 <p className="text-muted-foreground">
-                  Share training data securely with coaches, scouts, and sponsors using ZK-Proofs. You control who sees
-                  what—your data, your rules.
+                  Share training data securely with coaches, scouts, and
+                  sponsors using ZK-Proofs. You control who sees what—your data,
+                  your rules.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="how-it-works" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+        <section
+          id="how-it-works"
+          className="w-full py-12 md:py-24 lg:py-32 bg-muted"
+        >
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">How It Works</div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Your Journey to Better Performance</h2>
+                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
+                  How It Works
+                </div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  Your Journey to Better Performance
+                </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our platform seamlessly integrates with your existing devices and training routines to provide
-                  AI-powered insights while keeping your data secure.
+                  Our platform seamlessly integrates with your existing devices
+                  and training routines to provide AI-powered insights while
+                  keeping your data secure.
                 </p>
               </div>
             </div>
@@ -205,10 +233,12 @@ export default function LandingPage() {
                       1
                     </div>
                     <div className="grid gap-1">
-                      <h3 className="text-xl font-bold">Connect Your Devices</h3>
+                      <h3 className="text-xl font-bold">
+                        Connect Your Devices
+                      </h3>
                       <p className="text-muted-foreground">
-                        Sync your smartwatch, fitness trackers, and other IoT devices to automatically collect training
-                        data.
+                        Sync your smartwatch, fitness trackers, and other IoT
+                        devices to automatically collect training data.
                       </p>
                     </div>
                   </li>
@@ -219,8 +249,8 @@ export default function LandingPage() {
                     <div className="grid gap-1">
                       <h3 className="text-xl font-bold">Secure Your Data</h3>
                       <p className="text-muted-foreground">
-                        Your performance metrics are encrypted and stored on the blockchain, giving you complete
-                        ownership and control.
+                        Your performance metrics are encrypted and stored on the
+                        blockchain, giving you complete ownership and control.
                       </p>
                     </div>
                   </li>
@@ -231,8 +261,8 @@ export default function LandingPage() {
                     <div className="grid gap-1">
                       <h3 className="text-xl font-bold">Receive AI Insights</h3>
                       <p className="text-muted-foreground">
-                        Our AI analyzes your data to provide personalized training recommendations and performance
-                        predictions.
+                        Our AI analyzes your data to provide personalized
+                        training recommendations and performance predictions.
                       </p>
                     </div>
                   </li>
@@ -243,7 +273,8 @@ export default function LandingPage() {
                     <div className="grid gap-1">
                       <h3 className="text-xl font-bold">Earn Rewards</h3>
                       <p className="text-muted-foreground">
-                        Complete challenges, hit milestones, and earn Iten tokens and NFT achievements as you improve.
+                        Complete challenges, hit milestones, and earn Iten
+                        tokens and NFT achievements as you improve.
                       </p>
                     </div>
                   </li>
@@ -257,13 +288,16 @@ export default function LandingPage() {
           <div className="container px-4 md:px-6">
             <div className="grid gap-10 px-10 md:gap-16 lg:grid-cols-2">
               <div className="space-y-4">
-                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">Why Now?</div>
+                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
+                  Why Now?
+                </div>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
                   The Future of Athletic Training is Here
                 </h2>
                 <p className="text-muted-foreground md:text-xl">
-                  Traditional training apps centralize data, lack privacy, and offer little incentive for improvement.
-                  With the rise of Web3, AI, and zk-technology, athletes can now:
+                  Traditional training apps centralize data, lack privacy, and
+                  offer little incentive for improvement. With the rise of Web3,
+                  AI, and zk-technology, athletes can now:
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-center gap-2">
@@ -315,7 +349,9 @@ export default function LandingPage() {
                         <path d="M20 6L9 17l-5-5" />
                       </svg>
                     </div>
-                    <span className="font-medium">Train smarter, compete harder</span>
+                    <span className="font-medium">
+                      Train smarter, compete harder
+                    </span>
                   </li>
                 </ul>
                 <Button size="lg" className="mt-4">
@@ -340,11 +376,15 @@ export default function LandingPage() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">Technology</div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Cutting-Edge Technology</h2>
+                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
+                  Technology
+                </div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  Cutting-Edge Technology
+                </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our platform leverages advanced technologies to provide secure, private, and powerful athletic
-                  coaching.
+                  Our platform leverages advanced technologies to provide
+                  secure, private, and powerful athletic coaching.
                 </p>
               </div>
             </div>
@@ -356,8 +396,8 @@ export default function LandingPage() {
                   </div>
                   <h3 className="text-xl font-bold">Blockchain</h3>
                   <p className="text-muted-foreground">
-                    Immutable storage of your training data and achievements, ensuring complete ownership and
-                    transparency.
+                    Immutable storage of your training data and achievements,
+                    ensuring complete ownership and transparency.
                   </p>
                 </div>
               </div>
@@ -368,8 +408,8 @@ export default function LandingPage() {
                   </div>
                   <h3 className="text-xl font-bold">zkML</h3>
                   <p className="text-muted-foreground">
-                    Zero-Knowledge Machine Learning allows AI models to analyze your data while maintaining complete
-                    privacy.
+                    Zero-Knowledge Machine Learning allows AI models to analyze
+                    your data while maintaining complete privacy.
                   </p>
                 </div>
               </div>
@@ -380,8 +420,9 @@ export default function LandingPage() {
                   </div>
                   <h3 className="text-xl font-bold">GKR Protocol</h3>
                   <p className="text-muted-foreground">
-                    An advanced argument system for proving circuit satisfiability with no trusted setup and efficient
-                    proving time.
+                    An advanced argument system for proving circuit
+                    satisfiability with no trusted setup and efficient proving
+                    time.
                   </p>
                 </div>
               </div>
@@ -392,7 +433,8 @@ export default function LandingPage() {
                   </div>
                   <h3 className="text-xl font-bold">Expander</h3>
                   <p className="text-muted-foreground">
-                    A highly optimized GKR implementation that powers our secure and private AI computations.
+                    A highly optimized GKR implementation that powers our secure
+                    and private AI computations.
                   </p>
                 </div>
               </div>
@@ -403,17 +445,31 @@ export default function LandingPage() {
                   </div>
                   <h3 className="text-xl font-bold">Seamless Integration</h3>
                   <p className="text-muted-foreground">
-                    Our platform integrates with popular fitness devices and apps, making it easy to incorporate into
-                    your existing training routine. Connect your smartwatch, heart rate monitor, or GPS tracker to
-                    automatically sync your workout data.
+                    Our platform integrates with popular fitness devices and
+                    apps, making it easy to incorporate into your existing
+                    training routine. Connect your smartwatch, heart rate
+                    monitor, or GPS tracker to automatically sync your workout
+                    data.
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    <div className="rounded-full bg-muted px-3 py-1 text-sm">Garmin</div>
-                    <div className="rounded-full bg-muted px-3 py-1 text-sm">Apple Watch</div>
-                    <div className="rounded-full bg-muted px-3 py-1 text-sm">Fitbit</div>
-                    <div className="rounded-full bg-muted px-3 py-1 text-sm">Strava</div>
-                    <div className="rounded-full bg-muted px-3 py-1 text-sm">Polar</div>
-                    <div className="rounded-full bg-muted px-3 py-1 text-sm">Suunto</div>
+                    <div className="rounded-full bg-muted px-3 py-1 text-sm">
+                      Garmin
+                    </div>
+                    <div className="rounded-full bg-muted px-3 py-1 text-sm">
+                      Apple Watch
+                    </div>
+                    <div className="rounded-full bg-muted px-3 py-1 text-sm">
+                      Fitbit
+                    </div>
+                    <div className="rounded-full bg-muted px-3 py-1 text-sm">
+                      Strava
+                    </div>
+                    <div className="rounded-full bg-muted px-3 py-1 text-sm">
+                      Polar
+                    </div>
+                    <div className="rounded-full bg-muted px-3 py-1 text-sm">
+                      Suunto
+                    </div>
                   </div>
                 </div>
               </div>
@@ -428,8 +484,8 @@ export default function LandingPage() {
                 Ready to Transform Your Training?
               </h2>
               <p className="mx-auto max-w-[600px] text-primary-foreground/80 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Join thousands of athletes who are taking control of their data and optimizing their performance with
-                ItenAI.
+                Join thousands of athletes who are taking control of their data
+                and optimizing their performance with ItenAI.
               </p>
             </div>
             <div className="mx-auto w-full max-w-sm space-y-2">
@@ -454,11 +510,11 @@ export default function LandingPage() {
         </section>
       </main>
 
-      {/* <footer className="w-full border-t bg-background py-6 md:py-12">
+      <footer className="w-full border-t bg-background py-6 md:py-12">
         <div className="container flex flex-col items-center justify-center gap-4 px-4 md:px-6 md:flex-row md:justify-between">
           <div className="flex items-center gap-2 font-bold text-xl">
-            <Activity className="h-6 w-6 text-primary" />
-            <span>ItenAI</span>
+            <Image src="/logo.svg" alt="Logo" width={45} height={40} className="h-8 w-8 text-primary" />
+            <span>AthleteIQ</span>
           </div>
           <nav className="flex gap-4 sm:gap-6">
             <Link href="#" className="text-xs hover:underline underline-offset-4">
@@ -472,11 +528,10 @@ export default function LandingPage() {
             </Link>
           </nav>
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} ItenAI. All rights reserved.
+            &copy; {new Date().getFullYear()} AthleteIQ. All rights reserved.
           </p>
         </div>
-      </footer> */}
+      </footer>
     </div>
-  )
+  );
 }
-
