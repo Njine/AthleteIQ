@@ -139,4 +139,5 @@ Licensed under the GPLv3 License
 - Kedir Jabir - [GitHub](https://github.com/IbnuJabir) / [Twitter](https://x.com/Ibnu_J1) / [LinkedIn](https://www.linkedin.com/in/ibnu-jabir/)
 - Noor Amjad - [GitHub](https://github.com/Justxd22) / [Twitter](https://twitter.com/_xd222) / [LinkedIn](https://www.linkedin.com/in/noor-amjad-xd)
 - _ - [GitHub](https://github.com/_) / [Twitter](https://x.com/_) / [LinkedIn](https://linkedin.com/_)
+- Betty - 
 
