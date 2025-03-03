@@ -72,14 +72,14 @@ export default function LandingPage() {
               <div className="relative flex items-center justify-center">
                 <div className="relative h-[350px] w-full overflow-hidden rounded-xl md:h-[450px]">
                   <Image
-                    src="/placeholder.svg?height=450&width=700"
+                    src="/sc11.png"
                     alt="Athlete using the app"
                     fill
                     className="object-cover"
                     priority
                   />
                 </div>
-                <div className="absolute -bottom-6 left-6 right-6 rounded-lg bg-background p-4 shadow-lg md:bottom-8 md:left-8 md:right-8 md:p-6">
+                <div className="absolute -bottom-6 left-6 right-6 rounded-lg bg-black/40 backdrop-blur-xl p-4 shadow-lg md:bottom-8 md:left-8 md:right-8 md:p-6">
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <p className="text-sm font-medium">Today's Training</p>
@@ -219,13 +219,16 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-2">
-              <Image
-                src="/placeholder.svg?height=400&width=500"
-                width={500}
-                height={400}
-                alt="App dashboard showing athlete performance"
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full"
-              />
+            <div className="relative flex items-center justify-center">
+                <div className="relative h-[400px] w-full overflow-hidden rounded-xl">
+                  <Image
+                    src="/t5.jpg"
+                    alt="Athletes training with technology"
+                    fill
+                    className="object-cover object-[50%_20%]"
+                  />
+                </div>
+              </div>
               <div className="flex flex-col justify-center space-y-4">
                 <ul className="grid gap-6">
                   <li className="flex items-start gap-4">
@@ -361,10 +364,10 @@ export default function LandingPage() {
               <div className="relative flex items-center justify-center">
                 <div className="relative h-[400px] w-full overflow-hidden rounded-xl">
                   <Image
-                    src="/placeholder.svg?height=400&width=600"
+                    src="/t6.png"
                     alt="Athletes training with technology"
                     fill
-                    className="object-cover"
+                    className="object-cover object-[50%_80%]"
                   />
                 </div>
               </div>
