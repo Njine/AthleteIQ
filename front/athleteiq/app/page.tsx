@@ -32,81 +32,102 @@ export default function LandingPage() {
   //   return () => window.removeEventListener("scroll", handleScroll);
   // }, []);
   return (
-    <div className="w-full overflow-x-hidden">
-      <div
-        className="flex min-h-screen flex-col bg-cover bg-center bg-no-repeat text font-dmsans"
-        style={{ backgroundImage: "url('/bg1.png')", backgroundSize: "cover", backgroundPosition: "top" }}
-      >
-        <Header />
-        <div className="w-[600px] ml-40 py-12 mt-24 font-poppins flex flex-col gap-8"
-        style={{backgroundImage: "url('/Basketball.png')", backgroundSize: "cover", backgroundPosition: "center"}}>
-        <p className="text-8xl font-bold gradient-text">OWN YOUR TRAINING. OWN YOUR FUTURE.</p>
-          <p className="text-3xl font-bold gradient-text">AI-Powered. Blockchain-Secured.</p>
-        </div>
-      </div>
+    <div
+      className="w-full overflow-x-hidden"
+      style={{
+        backgroundImage: "url('/bg-whole.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "top",
+      }}
+    >
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-muted">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px]">
-              <div className="flex flex-col justify-center space-y-4">
-                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
-                  Revolutionizing Athletic Coaching
+        <div
+          className="flex min-h-screen flex-col bg-cover bg-center bg-no-repeat text font-dmsans"
+          style={{
+            backgroundImage: "url('/bg1.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "top",
+          }}
+        >
+          <Header />
+          <div
+            className="w-[600px] ml-40 py-12 mt-24 font-poppins flex flex-col gap-8"
+            style={{
+              backgroundImage: "url('/Basketball.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <p className="text-8xl font-bold gradient-text">
+              OWN YOUR TRAINING. OWN YOUR FUTURE.
+            </p>
+            <p className="text-3xl font-bold gradient-text">
+              AI-Powered. Blockchain-Secured.
+            </p>
+          </div>
+
+          <section className="w-full py-12 md:py-28 lg:py-48">
+            <div className="container px-4 md:px-6">
+              <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px]">
+                <div className="flex flex-col justify-center space-y-4">
+                  <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
+                    Revolutionizing Athletic Coaching
+                  </div>
+                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                    Own Your Training Data with Blockchain & AI
+                  </h1>
+                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
+                    A privacy-focused AI coaching app for athletes based on web3
+                    tech with wide integration with existing ecosystems and
+                    smart watches for maximum compatibility.
+                  </p>
+                  <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                    <Button size="lg" className="gap-1">
+                      Get Started <ChevronRight className="h-4 w-4" />
+                    </Button>
+                    <Button size="lg" variant="outline">
+                      Learn More
+                    </Button>
+                  </div>
                 </div>
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                  Own Your Training Data with Blockchain & AI
-                </h1>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  A privacy-focused AI coaching app for athletes based on web3
-                  tech with wide integration with existing ecosystems and smart
-                  watches for maximum compatibility.
-                </p>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Button size="lg" className="gap-1">
-                    Get Started <ChevronRight className="h-4 w-4" />
-                  </Button>
-                  <Button size="lg" variant="outline">
-                    Learn More
-                  </Button>
-                </div>
-              </div>
-              <div className="relative flex items-center justify-center">
-                <div className="relative h-[350px] w-full overflow-hidden rounded-xl md:h-[450px]">
-                  <Image
-                    src="/sc11.png"
-                    alt="Athlete using the app"
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                </div>
-                <div className="absolute -bottom-6 left-6 right-6 rounded-lg bg-black/40 backdrop-blur-xl p-4 shadow-lg md:bottom-8 md:left-8 md:right-8 md:p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">Today's Training</p>
-                      <p className="text-xl font-bold">5K Run + Strength</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex flex-col items-center">
-                        <Heart className="h-5 w-5 text-red-500" />
-                        <span className="text-xs font-medium">75 BPM</span>
+                <div className="relative flex items-center justify-center">
+                  <div className="relative h-[350px] w-full overflow-hidden rounded-xl md:h-[450px]">
+                    <Image
+                      src="/sc11.png"
+                      alt="Athlete using the app"
+                      fill
+                      className="object-cover"
+                      priority
+                    />
+                  </div>
+                  <div className="absolute -bottom-6 left-6 right-6 rounded-lg bg-black/40 backdrop-blur-xl p-4 shadow-lg md:bottom-8 md:left-8 md:right-8 md:p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium">Today's Training</p>
+                        <p className="text-xl font-bold">5K Run + Strength</p>
                       </div>
-                      <div className="flex flex-col items-center">
-                        <Clock className="h-5 w-5 text-blue-500" />
-                        <span className="text-xs font-medium">45 min</span>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <TrendingUp className="h-5 w-5 text-green-500" />
-                        <span className="text-xs font-medium">+12%</span>
+                      <div className="flex items-center gap-4">
+                        <div className="flex flex-col items-center">
+                          <Heart className="h-5 w-5 text-red-500" />
+                          <span className="text-xs font-medium">75 BPM</span>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <Clock className="h-5 w-5 text-blue-500" />
+                          <span className="text-xs font-medium">45 min</span>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <TrendingUp className="h-5 w-5 text-green-500" />
+                          <span className="text-xs font-medium">+12%</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        <section id="features" className="w-full py-12 md:py-24 lg:py-32">
+          </section>
+        </div>
+        <section id="features" className="w-full py-4 md:py-6 lg:py-12">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -123,7 +144,7 @@ export default function LandingPage() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-12">
+            <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-16">
               <div className="flex flex-col items-start gap-2">
                 <div className="rounded-lg bg-primary/10 p-2">
                   <Award className="h-6 w-6 text-primary" />
@@ -176,7 +197,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-bold">Tokenized Rewards</h3>
                 <p className="text-muted-foreground">
-                  Earn Iten tokens for completing training goals & competitions,
+                  Earn AthleteIQ tokens for completing training goals & competitions,
                   unlock exclusive NFT achievements, and climb global
                   leaderboards.
                 </p>
@@ -200,7 +221,7 @@ export default function LandingPage() {
 
         <section
           id="how-it-works"
-          className="w-full py-12 md:py-24 lg:py-32 bg-muted"
+          className="w-full py-4 md:py-6 lg:py-12"
         >
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -219,7 +240,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-2">
-            <div className="relative flex items-center justify-center">
+              <div className="relative flex items-center justify-center">
                 <div className="relative h-[400px] w-full overflow-hidden rounded-xl">
                   <Image
                     src="/t5.jpg"
@@ -287,7 +308,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="benefits" className="w-full py-12 md:py-24 lg:py-32">
+        <section id="benefits" className="w-full py-4 md:py-6 lg:py-12">
           <div className="container px-4 md:px-6">
             <div className="grid gap-10 px-10 md:gap-16 lg:grid-cols-2">
               <div className="space-y-4">
@@ -375,7 +396,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="tech" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+        <section id="tech" className="w-full py-4 md:py-6 lg:py-12">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -480,13 +501,13 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-primary text-primary-foreground">
+        <section className="w-full py-4 md:py-6 lg:py-12 text-white">
           <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
             <div className="space-y-3">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
                 Ready to Transform Your Training?
               </h2>
-              <p className="mx-auto max-w-[600px] text-primary-foreground/80 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              <p className="mx-auto max-w-[600px] md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                 Join thousands of athletes who are taking control of their data
                 and optimizing their performance with ItenAI.
               </p>
@@ -516,17 +537,32 @@ export default function LandingPage() {
       <footer className="w-full border-t bg-background py-6 md:py-12">
         <div className="container flex flex-col items-center justify-center gap-4 px-4 md:px-6 md:flex-row md:justify-between">
           <div className="flex items-center gap-2 font-bold text-xl">
-            <Image src="/logo.svg" alt="Logo" width={45} height={40} className="h-8 w-8 text-primary" />
+            <Image
+              src="/logo.svg"
+              alt="Logo"
+              width={45}
+              height={40}
+              className="h-8 w-8 text-primary"
+            />
             <span>AthleteIQ</span>
           </div>
           <nav className="flex gap-4 sm:gap-6">
-            <Link href="#" className="text-xs hover:underline underline-offset-4">
+            <Link
+              href="#"
+              className="text-xs hover:underline underline-offset-4"
+            >
               Terms of Service
             </Link>
-            <Link href="#" className="text-xs hover:underline underline-offset-4">
+            <Link
+              href="#"
+              className="text-xs hover:underline underline-offset-4"
+            >
               Privacy Policy
             </Link>
-            <Link href="#" className="text-xs hover:underline underline-offset-4">
+            <Link
+              href="#"
+              className="text-xs hover:underline underline-offset-4"
+            >
               Contact
             </Link>
           </nav>
