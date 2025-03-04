@@ -98,7 +98,7 @@ export default function LandingPage() {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="w-full max-w-[800px] mx-auto px-6 md:ml-40 py-12 mt-24 font-poppins flex flex-col gap-8 z-10"
+            className="w-full max-w-[800px] mx-auto px-6 md:ml-40 py-20 mt-24 font-poppins flex flex-col gap-8 z-10"
             style={{
               backgroundImage: "url('/Basketball.png')",
               backgroundSize: "cover",
