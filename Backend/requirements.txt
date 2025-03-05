@@ -8,3 +8,9 @@ Werkzeug
 # oauthlib
 # oauth
 uuid
+numpy
+pandas
+scikit-learn
+xgboost
+orion-zk
+web3
