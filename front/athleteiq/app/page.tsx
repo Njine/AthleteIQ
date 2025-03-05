@@ -32,29 +32,29 @@ export default function LandingPage() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   };
-  
+
   const staggerChildren = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
-      transition: { 
+      transition: {
         staggerChildren: 0.2,
         delayChildren: 0.3
-      } 
+      }
     }
   };
 
   const heroImageAnimation = {
     hidden: { scale: 0.9, opacity: 0 },
-    visible: { 
-      scale: 1, 
-      opacity: 1, 
-      transition: { 
-        type: "spring", 
-        stiffness: 100, 
-        damping: 15, 
-        delay: 0.2 
-      } 
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        delay: 0.2
+      }
     }
   };
 
@@ -68,7 +68,7 @@ export default function LandingPage() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  
+
   const startText = useMemo(() => ["OWN  YOUR", "TRAINING.", "OWN  YOUR", "FUTURE."], []);
   if (!mounted) return null;
 
@@ -81,7 +81,7 @@ export default function LandingPage() {
         backgroundImage: "url('/bg2.png')",
         backgroundSize: "cover",
         backgroundPosition: "top",
-              }}
+      }}
     >
       <main className="flex-1">
         <div
@@ -91,10 +91,10 @@ export default function LandingPage() {
             backgroundSize: "cover",
             backgroundPosition: "top",
           }}
-        >          
+        >
           <Header className={`transition-all duration-300 ${isScrolled ? 'bg-black/80 backdrop-blur-lg' : 'bg-transparent'}`} />
-          
-          <motion.div 
+
+          <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeIn}
@@ -105,37 +105,15 @@ export default function LandingPage() {
               backgroundPosition: "center",
             }}
           >
-
-{/* <BlurText
-
-text="Isn't this so cool?!"
-
-delay={150}
-
-animateBy="words"
-
-direction="top"
-
-
-className="text-2xl mb-8"
-
-/> */}
-
-          <BlurText
-            key="start"
-            text={startText}
-            delay={150}
-            animateBy="words"
-            direction="top"
-            className="text-8xl font-bold gradient-text"
-          />
-            {/* <motion.p 
+            <BlurText
+              key="start"
+              text={startText}
+              delay={150}
+              animateBy="words"
+              direction="top"
               className="text-8xl font-bold gradient-text"
-              variants={fadeIn}
-            >
-              OWN YOUR TRAINING. OWN YOUR FUTURE.
-            </motion.p> */}
-            <motion.p 
+            />
+            <motion.p
               className="text-3xl font-bold gradient-text"
               variants={fadeIn}
               transition={{ delay: 3 }}
@@ -147,7 +125,7 @@ className="text-2xl mb-8"
           <section className="w-full py-12 md:py-28 lg:py-48 relative z-10">
             <div className="container px-4 md:px-6">
               <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px]">
-                <motion.div 
+                <motion.div
                   className="flex flex-col justify-center space-y-4"
                   initial="hidden"
                   whileInView="visible"
@@ -162,7 +140,7 @@ className="text-2xl mb-8"
                     tech with wide integration with existing ecosystems and
                     smart watches for maximum compatibility.
                   </p>
-                  <motion.div 
+                  <motion.div
                     className="flex flex-col gap-2 min-[400px]:flex-row"
                     variants={staggerChildren}
                   >
@@ -178,42 +156,32 @@ className="text-2xl mb-8"
                     </motion.div>
                   </motion.div>
                 </motion.div>
-                <motion.div 
+                <motion.div
                   className="relative flex items-center justify-center"
                   variants={heroImageAnimation}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, margin: "-100px" }}
                 >
-                  {/* <div className="relative h-[350px] w-full overflow-hidden rounded-xl md:h-[450px] shadow-2xl shadow-purple-500/20">
-                    <Image
-                      src="/sc11.png"
-                      alt="Athlete using the app"
-                      fill
-                      className="object-cover"
-                      priority
-                    />
-                  </div> */}
-
-<TiltedCard
-                  imageSrc="/sc11.png"
-                  containerHeight="400px"
-                  containerWidth="400px"
-                  imageHeight="450px"
-                  imageWidth="700px"
-                  scaleOnHover={1.1}
-                  showMobileWarning={false}
-                  showTooltip={false}
-                  displayOverlayContent={false}
-                  effectStyle="neon"
-                  shadowColor="rgba(168, 85, 247, 0.2)"
-                  rotateAmplitude={18}
-                  glowIntensity={1.5}
-                  imageFilter={
-                    <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/30 to-pink-500/30 mix-blend-overlay"></div>
-                  }
-                />
-                  <motion.div 
+                  <TiltedCard
+                    imageSrc="/sc11.png"
+                    containerHeight="400px"
+                    containerWidth="400px"
+                    imageHeight="450px"
+                    imageWidth="700px"
+                    scaleOnHover={1.1}
+                    showMobileWarning={false}
+                    showTooltip={false}
+                    displayOverlayContent={false}
+                    effectStyle="neon"
+                    shadowColor="rgba(168, 85, 247, 0.2)"
+                    rotateAmplitude={18}
+                    glowIntensity={1.5}
+                    imageFilter={
+                      <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/30 to-pink-500/30 mix-blend-overlay"></div>
+                    }
+                  />
+                  <motion.div
                     className="absolute -bottom-6 left-6 right-6 rounded-lg bg-black/40 backdrop-blur-xl p-4 shadow-lg md:bottom-8 md:left-8 md:right-8 md:p-6 border border-purple-500/30"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -226,21 +194,21 @@ className="text-2xl mb-8"
                         <p className="text-xl font-bold text-white">5K Run + Strength</p>
                       </div>
                       <div className="flex items-center gap-4">
-                        <motion.div 
+                        <motion.div
                           className="flex flex-col items-center"
                           whileHover={{ scale: 1.1 }}
                         >
                           <Heart className="h-5 w-5 text-pink-500" />
                           <span className="text-xs font-medium text-gray-300">75 BPM</span>
                         </motion.div>
-                        <motion.div 
+                        <motion.div
                           className="flex flex-col items-center"
                           whileHover={{ scale: 1.1 }}
                         >
                           <Clock className="h-5 w-5 text-blue-500" />
                           <span className="text-xs font-medium text-gray-300">45 min</span>
                         </motion.div>
-                        <motion.div 
+                        <motion.div
                           className="flex flex-col items-center"
                           whileHover={{ scale: 1.1 }}
                         >
@@ -255,10 +223,10 @@ className="text-2xl mb-8"
             </div>
           </section>
         </div>
-        
+
         <section id="features" className="w-full py-4 md:py-6 lg:py-12 relative">
           <div className="container px-4 md:px-6 relative z-10">
-            <motion.div 
+            <motion.div
               className="flex flex-col items-center justify-center space-y-4 text-center"
               initial="hidden"
               whileInView="visible"
@@ -279,8 +247,8 @@ className="text-2xl mb-8"
                 </p>
               </div>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               className="mx-auto grid max-w-5xl items-center gap-6 py-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-16"
               variants={staggerChildren}
               initial="hidden"
@@ -319,7 +287,7 @@ className="text-2xl mb-8"
                   description: "Share training data securely with coaches, scouts, and sponsors using ZK-Proofs. You control who sees what—your data, your rules."
                 }
               ].map((feature, index) => (
-                <motion.div 
+                <motion.div
                   key={index}
                   className="flex flex-col items-start gap-2"
                   variants={fadeIn}
@@ -343,7 +311,7 @@ className="text-2xl mb-8"
           className="w-full py-4 md:py-6 lg:py-12 "
         >
           <div className="container px-4 md:px-6">
-            <motion.div 
+            <motion.div
               className="flex flex-col items-center justify-center space-y-4 text-center"
               initial="hidden"
               whileInView="visible"
@@ -365,7 +333,7 @@ className="text-2xl mb-8"
               </div>
             </motion.div>
             <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-2">
-              <motion.div 
+              <motion.div
                 className="relative flex items-center justify-center"
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -391,17 +359,8 @@ className="text-2xl mb-8"
                     <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/30 to-pink-500/30 mix-blend-overlay"></div>
                   }
                 />
-                {/* <div className="relative h-[400px] w-full overflow-hidden rounded-xl shadow-2xl shadow-pink-500/40">
-                  <Image
-                    src="/t5.jpg"
-                    alt="Athletes training with technology"
-                    fill
-                    className="object-cover object-[50%_20%]"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/30 to-pink-500/30 mix-blend-overlay"></div>
-                </div> */}
               </motion.div>
-              <motion.div 
+              <motion.div
                 className="flex flex-col justify-center space-y-4"
                 variants={staggerChildren}
                 initial="hidden"
@@ -431,8 +390,8 @@ className="text-2xl mb-8"
                       description: "Complete challenges, hit milestones, and earn AthleteIQ tokens and NFT achievements as you improve."
                     }
                   ].map((step, index) => (
-                    <motion.li 
-                      key={index} 
+                    <motion.li
+                      key={index}
                       className="flex items-start gap-4"
                       variants={fadeIn}
                       whileHover={{ x: 10, transition: { duration: 0.2 } }}
@@ -454,10 +413,10 @@ className="text-2xl mb-8"
           </div>
         </section>
 
-        <section id="benefits" className="w-full py-4 md:py-6 lg:py-12 relative">          
+        <section id="benefits" className="w-full py-4 md:py-6 lg:py-12 relative">
           <div className="container px-4 md:px-6 relative z-10">
             <div className="grid gap-10 px-4 md:px-10 md:gap-16 lg:grid-cols-2">
-              <motion.div 
+              <motion.div
                 className="space-y-4"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -475,7 +434,7 @@ className="text-2xl mb-8"
                   offer little incentive for improvement. With the rise of Web3,
                   AI, and zk-technology, athletes can now:
                 </p>
-                <motion.ul 
+                <motion.ul
                   className="space-y-2"
                   variants={staggerChildren}
                   initial="hidden"
@@ -487,8 +446,8 @@ className="text-2xl mb-8"
                     "Monetize their progress",
                     "Train smarter, compete harder"
                   ].map((item, index) => (
-                    <motion.li 
-                      key={index} 
+                    <motion.li
+                      key={index}
                       className="flex items-center gap-2"
                       variants={fadeIn}
                       whileHover={{ x: 10 }}
@@ -520,7 +479,7 @@ className="text-2xl mb-8"
                   </Button>
                 </motion.div>
               </motion.div>
-              <motion.div 
+              <motion.div
                 className="relative flex items-center justify-center"
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -529,7 +488,7 @@ className="text-2xl mb-8"
               >
 
 
-<TiltedCard
+                <TiltedCard
                   imageSrc="/t6.png"
                   containerHeight="400px"
                   containerWidth="400px"
@@ -547,18 +506,6 @@ className="text-2xl mb-8"
                     <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/30 to-pink-500/30 mix-blend-overlay"></div>
                   }
                 />
-                {/* <div className="relative h-[400px] w-full overflow-hidden rounded-xl shadow-2xl shadow-[0_9px_38px_rgba(0,252,237,0.4)]">
-                  <Image
-                    src="/t6.png"
-                    alt="Athletes training with technology"
-                    fill
-                    className="object-cover object-[50%_80%]"
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/30 to-pink-500/30 mix-blend-overlay"></div>
-                </div> */}
-                {/* Animated pulse effect */}
-                {/* <div className="absolute inset-0 rounded-xl bg-pink-500/10 animate-pulse"></div> */}
               </motion.div>
             </div>
           </div>
@@ -566,7 +513,7 @@ className="text-2xl mb-8"
 
         <section id="tech" className="w-full py-4 md:py-6 lg:py-12 relative">
           <div className="container px-4 md:px-6 relative z-10">
-            <motion.div 
+            <motion.div
               className="flex flex-col items-center justify-center space-y-4 text-center"
               initial="hidden"
               whileInView="visible"
@@ -586,7 +533,7 @@ className="text-2xl mb-8"
                 </p>
               </div>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="mx-auto grid max-w-5xl gap-6 py-12 md:grid-cols-2 lg:grid-cols-3"
               variants={staggerChildren}
               initial="hidden"
@@ -615,13 +562,13 @@ className="text-2xl mb-8"
                   description: "A highly optimized GKR implementation that powers our secure and private AI computations."
                 }
               ].map((tech, index) => (
-                <motion.div 
+                <motion.div
                   key={index}
                   className="rounded-lg border border-purple-500/20 bg-black/40 backdrop-blur-sm p-6 shadow-lg shadow-purple-500/10"
                   variants={fadeIn}
-                  whileHover={{ 
-                    y: -10, 
-                    boxShadow: "0 20px 25px -5px rgba(147, 51, 234, 0.2), 0 8px 10px -6px rgba(147, 51, 234, 0.2)" 
+                  whileHover={{
+                    y: -10,
+                    boxShadow: "0 20px 25px -5px rgba(147, 51, 234, 0.2), 0 8px 10px -6px rgba(147, 51, 234, 0.2)"
                   }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
@@ -636,12 +583,12 @@ className="text-2xl mb-8"
                   </div>
                 </motion.div>
               ))}
-              <motion.div 
+              <motion.div
                 className="rounded-lg border border-purple-500/20 bg-black/40 backdrop-blur-sm p-6 shadow-lg shadow-purple-500/10 md:col-span-2 lg:col-span-2"
                 variants={fadeIn}
-                whileHover={{ 
-                  y: -10, 
-                  boxShadow: "0 20px 25px -5px rgba(147, 51, 234, 0.2), 0 8px 10px -6px rgba(147, 51, 234, 0.2)" 
+                whileHover={{
+                  y: -10,
+                  boxShadow: "0 20px 25px -5px rgba(147, 51, 234, 0.2), 0 8px 10px -6px rgba(147, 51, 234, 0.2)"
                 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
@@ -657,12 +604,12 @@ className="text-2xl mb-8"
                     monitor, or GPS tracker to automatically sync your workout
                     data.
                   </p>
-                  <motion.div 
+                  <motion.div
                     className="flex flex-wrap gap-2"
                     variants={staggerChildren}
                   >
                     {["Garmin", "Apple Watch", "Fitbit", "Strava", "Polar", "Suunto"].map((device, index) => (
-                      <motion.div 
+                      <motion.div
                         key={index}
                         className="rounded-full bg-gradient-to-b from-[#F1039C] to-transparent hover:from-pink-600 hover:to-purple-700 text-white border-0 px-3 py-1 text-sm text-white"
                         style={{ backgroundImage: "linear-gradient(220deg, #F1039C -5.33%, rgba(255, 255, 255, 0) 156.4%)" }}
@@ -699,9 +646,9 @@ className="text-2xl mb-8"
                   type="email"
                 />
                 <motion.div variants={fadeIn} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                      <Button size="lg" className="gap-1 bg-gradient-to-b from-[#F1039C] to-transparent hover:from-pink-600 hover:to-purple-700 text-white border-0 glow" style={{ backgroundImage: "linear-gradient(220deg, #F1039C -5.33%, rgba(255, 255, 255, 0) 156.4%)" }}>
-                      Get Early Access <ChevronRight className="h-4 w-4" />
-                      </Button>
+                  <Button size="lg" className="gap-1 bg-gradient-to-b from-[#F1039C] to-transparent hover:from-pink-600 hover:to-purple-700 text-white border-0 glow" style={{ backgroundImage: "linear-gradient(220deg, #F1039C -5.33%, rgba(255, 255, 255, 0) 156.4%)" }}>
+                    Get Early Access <ChevronRight className="h-4 w-4" />
+                  </Button>
                 </motion.div>
               </form>
               <p className="text-xs text-primary-foreground/60">

@@ -97,3 +97,8 @@ body {
 .glow {
   box-shadow: 0px 0px 18px 2px #d4048d;
 }
+
+.glowICon {
+background: #CCFF00;
+box-shadow: 0px -2px 45px #A36B37, 0px 17.9224px 215.068px #99EB13;
+}
