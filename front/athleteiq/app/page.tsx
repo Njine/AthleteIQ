@@ -92,7 +92,7 @@ export default function LandingPage() {
             backgroundPosition: "top",
           }}
         >
-          <Header className={`transition-all duration-300 ${isScrolled ? 'bg-black/80 backdrop-blur-lg' : 'bg-transparent'}`} />
+          <Header />
 
           <motion.div
             initial="hidden"
