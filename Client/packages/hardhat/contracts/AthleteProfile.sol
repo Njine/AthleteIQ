@@ -2,16 +2,18 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import "hardhat/console.sol";
+import "./ZKPVerification.sol"; // Import the ZKPVerification contract
 
 contract AthleteProfile {
     struct Athlete {
-        string name;
+        string name; // Optional field
         uint256 age;
         string sex;
         string sport;
         uint256 height; // in centimeters
         uint256 weight; // in kilograms
         string country;
+        bool exists; // Added to track if the athlete is registered
     }
 
     // Mapping from athlete address to their profile
@@ -32,12 +34,16 @@ contract AthleteProfile {
         string country
     );
 
-    // zk-proof verification key (replace with your actual key)
-    bytes32 public constant VERIFICATION_KEY = 0x5b38da6a701c568545dcfcb03fcb875f56beddc4000000000000000000000000;
+    // Instance of the ZKPVerification contract
+    ZKPVerification private zkpVerification;
+
+    constructor(address _zkpVerificationAddress) {
+        zkpVerification = ZKPVerification(_zkpVerificationAddress);
+    }
 
     /**
      * @dev Creates or updates an athlete's profile using zk-proof.
-     * @param _name The athlete's name.
+     * @param _name The athlete's name (optional).
      * @param _age The athlete's age.
      * @param _sex The athlete's sex/gender.
      * @param _sport The sport the athlete participates in.
@@ -45,23 +51,29 @@ contract AthleteProfile {
      * @param _weight The athlete's weight in kilograms.
      * @param _country The athlete's country of origin.
      * @param _proof The zk-proof for authentication.
+     * @param _derivedAddress The zk-derived wallet address.
      */
     function setProfileWithZkProof(
-        string calldata _name,
+        string calldata _name, // Optional field
         uint256 _age,
         string calldata _sex,
         string calldata _sport,
         uint256 _height,
         uint256 _weight,
         string calldata _country,
-        bytes calldata _proof
+        bytes calldata _proof,
+        bytes32 _derivedAddress
     ) public {
-        // Verify the zk-proof
-        require(verifyZkProof(_proof), "Invalid zk-proof");
+        // Verify the zk-proof using the ZKPVerification contract
+        require(zkpVerification.verifyZkProof(_proof, _derivedAddress), "Invalid zk-proof");
+
+        // Convert derivedAddress to address type
+        address athleteAddress = address(uint160(uint256(_derivedAddress)));
 
         // Check if the profile already exists
-        Athlete storage athlete = athletes[msg.sender];
+        Athlete storage athlete = athletes[athleteAddress];
         if (
+            !athlete.exists || // Check if the athlete is new
             keccak256(bytes(athlete.name)) != keccak256(bytes(_name)) ||
             athlete.age != _age ||
             keccak256(bytes(athlete.sex)) != keccak256(bytes(_sex)) ||
@@ -70,18 +82,19 @@ contract AthleteProfile {
             athlete.weight != _weight ||
             keccak256(bytes(athlete.country)) != keccak256(bytes(_country))
         ) {
-            // Update the profile only if data has changed
-            athlete.name = _name;
+            // Update the profile
+            athlete.name = _name; // Can be empty
             athlete.age = _age;
             athlete.sex = _sex;
             athlete.sport = _sport;
             athlete.height = _height;
             athlete.weight = _weight;
             athlete.country = _country;
+            athlete.exists = true; // Mark as registered
 
             // Emit an event for the profile update
             emit ProfileUpdated(
-                msg.sender,
+                athleteAddress,
                 _name,
                 _age,
                 _sex,
@@ -93,17 +106,9 @@ contract AthleteProfile {
         }
 
         // Add the athlete's address to the list if it's a new profile
-        if (!isAthlete(msg.sender)) {
-            athleteAddresses.push(msg.sender);
+        if (!isAthlete(athleteAddress)) {
+            athleteAddresses.push(athleteAddress);
         }
-    }
-
-    /**
-     * @dev Verifies the zk-proof.
-     */
-    function verifyZkProof(bytes memory /*_proof*/) internal pure returns (bool) {
-        // Placeholder for zk-proof verification logic
-        return true; // Replace with actual verification logic
     }
 
     /**
@@ -119,6 +124,7 @@ contract AthleteProfile {
         uint256,
         string memory
     ) {
+        require(athletes[_athlete].exists, "Athlete not registered");
         Athlete memory athlete = athletes[_athlete];
         return (
             athlete.name,
@@ -136,7 +142,7 @@ contract AthleteProfile {
      * @param _athlete The address to check.
      */
     function isAthlete(address _athlete) public view returns (bool) {
-        return bytes(athletes[_athlete].name).length > 0;
+        return athletes[_athlete].exists;
     }
 
     /**
