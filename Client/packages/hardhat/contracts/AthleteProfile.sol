@@ -1,11 +1,3 @@
-/*This Solidity file defines a smart contract
- named AthleteProfile that manages athlete profiles
-  on the Ethereum blockchain. The contract allows
-   for the creation, updating, and retrieval of
-    athlete profiles using zero-knowledge proofs
-     (ZKPs) for authentication. It also integrates
-      with other contracts for ZKP verification
-       and rewards distribution.*/
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
@@ -23,6 +15,9 @@ contract AthleteProfile {
         uint256 height; // in centimeters
         uint256 weight; // in kilograms
         string country;
+        uint256 trainingHours; // Total training hours logged
+        uint256 performanceMetric; // Performance metric (e.g., speed, endurance, strength)
+        uint256 lastPerformanceMetric; // Previous performance metric for improvement tracking
         bool exists; // Added to track if the athlete is registered
     }
 
@@ -130,8 +125,8 @@ contract AthleteProfile {
                 _country
             );
 
-            // Reward the athlete with ITEN Points for updating their profile
-            rewardAthlete(athleteAddress);
+            // Reward the athlete for completing their profile
+            rewardProfileCompletion(athleteAddress);
         }
 
         // Add the athlete's address to the list if it's a new profile
@@ -141,13 +136,91 @@ contract AthleteProfile {
     }
 
     /**
-     * @dev Rewards an athlete with ITEN Points.
+     * @dev Rewards an athlete for completing their profile.
      * @param athleteAddress The address of the athlete.
      */
-    function rewardAthlete(address athleteAddress) internal {
-        // Reward the athlete with 100 ITEN Points (example amount)
-        uint256 rewardAmount = 100 * 10 ** 18; // Adjust decimals if needed
+    function rewardProfileCompletion(address athleteAddress) internal {
+        Athlete storage athlete = athletes[athleteAddress];
+        require(athlete.exists, "Athlete not registered");
+
+        // Check if all profile fields are filled
+        if (
+            bytes(athlete.name).length > 0 &&
+            athlete.age > 0 &&
+            bytes(athlete.sex).length > 0 &&
+            bytes(athlete.sport).length > 0 &&
+            athlete.height > 0 &&
+            athlete.weight > 0 &&
+            bytes(athlete.country).length > 0
+        ) {
+            // Reward the athlete with 50 ITEN Points
+            uint256 rewardAmount = 50 * 10 ** 18; // Adjust decimals if needed
+            itenPoints.transfer(athleteAddress, rewardAmount);
+        }
+    }
+
+    /**
+     * @dev Logs training hours for an athlete.
+     * @param athleteAddress The address of the athlete.
+     * @param hoursLogged The number of training hours logged.
+     */
+    function logTrainingHours(address athleteAddress, uint256 hoursLogged) public {
+        require(athletes[athleteAddress].exists, "Athlete not registered");
+
+        // Reward the athlete for logging training hours
+        rewardTrainingHours(athleteAddress, hoursLogged);
+    }
+
+    /**
+     * @dev Rewards an athlete for logging training hours.
+     * @param athleteAddress The address of the athlete.
+     * @param hoursLogged The number of training hours logged.
+     */
+    function rewardTrainingHours(address athleteAddress, uint256 hoursLogged) internal {
+        Athlete storage athlete = athletes[athleteAddress];
+        require(athlete.exists, "Athlete not registered");
+
+        // Reward 10 ITEN Points for every 10 hours of training
+        uint256 rewardAmount = (hoursLogged / 10) * 10 * 10 ** 18; // Adjust decimals if needed
         itenPoints.transfer(athleteAddress, rewardAmount);
+
+        // Update the athlete's total training hours
+        athlete.trainingHours += hoursLogged;
+    }
+
+    /**
+     * @dev Logs performance metrics for an athlete.
+     * @param athleteAddress The address of the athlete.
+     * @param newPerformanceMetric The new performance metric.
+     */
+    function logPerformanceMetric(address athleteAddress, uint256 newPerformanceMetric) public {
+        require(athletes[athleteAddress].exists, "Athlete not registered");
+
+        // Reward the athlete for improving their performance
+        rewardPerformanceImprovement(athleteAddress, newPerformanceMetric);
+    }
+
+    /**
+     * @dev Rewards an athlete for improving their performance metric.
+     * @param athleteAddress The address of the athlete.
+     * @param newPerformanceMetric The new performance metric.
+     */
+    function rewardPerformanceImprovement(address athleteAddress, uint256 newPerformanceMetric) internal {
+        Athlete storage athlete = athletes[athleteAddress];
+        require(athlete.exists, "Athlete not registered");
+
+        // Calculate the percentage improvement
+        uint256 improvement = (newPerformanceMetric * 100) / athlete.lastPerformanceMetric;
+
+        // Reward 100 ITEN Points for a 10% improvement
+        if (improvement >= 110) { // 10% improvement
+            uint256 rewardAmount = 100 * 10 ** 18; // Adjust decimals if needed
+            itenPoints.transfer(athleteAddress, rewardAmount);
+        }
+
+        // Update the athlete's performance metric
+        athlete.lastPerformanceMetric = athlete.performanceMetric;
+        athlete.performanceMetric = newPerformanceMetric;
     }
 
     /**
