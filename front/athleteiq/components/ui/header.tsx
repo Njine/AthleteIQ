@@ -84,10 +84,12 @@ export default function Header() {
                 <line x1="3" y1="18" x2="21" y2="18"></line>
               </svg>
             </button>
+            <a href="/login">
             <button className={`
               px-5 py-2 rounded-full text-sm text-white transition-colors bg-gradient-to-r from-[rgba(241,3,128,0.7)] to-[rgba(250,213,171,0.7)]`}>
               Login
             </button>
+            </a>
           </div>
         </div>
       </div>
