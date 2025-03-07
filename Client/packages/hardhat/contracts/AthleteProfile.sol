@@ -1,8 +1,18 @@
+/*This Solidity file defines a smart contract
+ named AthleteProfile that manages athlete profiles
+  on the Ethereum blockchain. The contract allows
+   for the creation, updating, and retrieval of
+    athlete profiles using zero-knowledge proofs
+     (ZKPs) for authentication. It also integrates
+      with other contracts for ZKP verification
+       and rewards distribution.*/
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
 import "hardhat/console.sol";
-import "./ZKPVerification.sol"; // Import the ZKPVerification contract
+import "./ZKPVerificationLogin.sol"; // For zk-keyless login
+import "./ZKPVerificationML.sol"; // For Expander zkML with GKR
+import "./ITENPoints.sol"; // For ITEN Points rewards
 
 contract AthleteProfile {
     struct Athlete {
@@ -34,11 +44,27 @@ contract AthleteProfile {
         string country
     );
 
-    // Instance of the ZKPVerification contract
-    ZKPVerification private zkpVerification;
+    // Instance of the ZKPVerificationLogin contract
+    ZKPVerificationLogin private zkpVerificationLogin;
 
-    constructor(address _zkpVerificationAddress) {
-        zkpVerification = ZKPVerification(_zkpVerificationAddress);
+    // Instance of the ZKPVerificationML contract
+    ZKPVerificationML private zkpVerificationML;
+
+    // Instance of the ITENPoints token contract
+    ITENPoints private itenPoints;
+
+    // Address of the admin (for reward distribution)
+    address public admin;
+
+    constructor(
+        address _zkpVerificationLoginAddress,
+        address _zkpVerificationMLAddress,
+        address _itenPointsAddress
+    ) {
+        zkpVerificationLogin = ZKPVerificationLogin(_zkpVerificationLoginAddress);
+        zkpVerificationML = ZKPVerificationML(_zkpVerificationMLAddress);
+        itenPoints = ITENPoints(_itenPointsAddress);
+        admin = msg.sender;
     }
 
     /**
@@ -64,8 +90,8 @@ contract AthleteProfile {
         bytes calldata _proof,
         bytes32 _derivedAddress
     ) public {
-        // Verify the zk-proof using the ZKPVerification contract
-        require(zkpVerification.verifyZkProof(_proof, _derivedAddress), "Invalid zk-proof");
+        // Verify the zk-proof using the ZKPVerificationLogin contract
+        require(zkpVerificationLogin.verifyLoginProof(_proof, _derivedAddress), "Invalid zk-proof");
 
         // Convert derivedAddress to address type
         address athleteAddress = address(uint160(uint256(_derivedAddress)));
@@ -103,12 +129,25 @@ contract AthleteProfile {
                 _weight,
                 _country
             );
+
+            // Reward the athlete with ITEN Points for updating their profile
+            rewardAthlete(athleteAddress);
         }
 
         // Add the athlete's address to the list if it's a new profile
         if (!isAthlete(athleteAddress)) {
             athleteAddresses.push(athleteAddress);
         }
+    }
+
+    /**
+     * @dev Rewards an athlete with ITEN Points.
+     * @param athleteAddress The address of the athlete.
+     */
+    function rewardAthlete(address athleteAddress) internal {
+        // Reward the athlete with 100 ITEN Points (example amount)
+        uint256 rewardAmount = 100 * 10 ** 18; // Adjust decimals if needed
+        itenPoints.transfer(athleteAddress, rewardAmount);
     }
 
     /**
@@ -150,5 +189,32 @@ contract AthleteProfile {
      */
     function getTotalAthletes() public view returns (uint256) {
         return athleteAddresses.length;
+    }
+
+    /**
+     * @dev Allows the admin to update the ZKPVerificationLogin contract address.
+     * @param _zkpVerificationLoginAddress The new ZKPVerificationLogin contract address.
+     */
+    function updateZKPVerificationLoginAddress(address _zkpVerificationLoginAddress) public {
+        require(msg.sender == admin, "Only admin can update ZKPVerificationLogin address");
+        zkpVerificationLogin = ZKPVerificationLogin(_zkpVerificationLoginAddress);
+    }
+
+    /**
+     * @dev Allows the admin to update the ZKPVerificationML contract address.
+     * @param _zkpVerificationMLAddress The new ZKPVerificationML contract address.
+     */
+    function updateZKPVerificationMLAddress(address _zkpVerificationMLAddress) public {
+        require(msg.sender == admin, "Only admin can update ZKPVerificationML address");
+        zkpVerificationML = ZKPVerificationML(_zkpVerificationMLAddress);
+    }
+
+    /**
+     * @dev Allows the admin to update the ITENPoints contract address.
+     * @param _itenPointsAddress The new ITENPoints contract address.
+     */
+    function updateITENPointsAddress(address _itenPointsAddress) public {
+        require(msg.sender == admin, "Only admin can update ITENPoints address");
+        itenPoints = ITENPoints(_itenPointsAddress);
     }
 }
