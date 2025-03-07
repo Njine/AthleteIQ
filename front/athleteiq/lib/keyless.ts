@@ -43,6 +43,7 @@ export const deriveKeylessAccount = async (
   ephemeralKeyPair: EphemeralKeyPair
 ): Promise<KeylessAccount> => {
   const decodedJwt = decodeIdToken(jwt);
+  console.log(decodedJwt.sub, ephemeralKeyPair.nonce, ephemeralKeyPair.privateKey);
   
   // Create a deterministic seed from the JWT subject and the ephemeral key
   const seed = ethers.solidityPackedKeccak256(

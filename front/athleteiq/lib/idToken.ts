@@ -3,6 +3,7 @@ import { EncryptedScopedIdToken, scopedPayloadSchema } from "./types";
 
 export const decodeIdToken = (jwt: string): EncryptedScopedIdToken => {
   const decoded = jwtDecode(jwt);
+  console.log(decoded);
   return scopedPayloadSchema.parse(decoded);
 };
 
@@ -12,6 +13,7 @@ export const isValidIdToken = (
   if (typeof jwt === "string") return isValidIdToken(decodeIdToken(jwt));
 
   // Check whether the token has an expiration, nonce, and is not expired
+  console.log(jwt)
   if (!jwt.nonce) return false;
   
   // Check if token is expired
