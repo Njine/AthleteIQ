@@ -11,6 +11,6 @@ export const sepoliaProvider = new ethers.JsonRpcProvider(
 
 export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 
-export const REDIRECT_URI = (process.env.VERCEL_PROJECT_PRODUCTION_URL || "http://localhost:3000") + "/auth/callback";
+export const REDIRECT_URI = (process.env.NEXT_PUBLIC_URLL || "http://localhost:3000") + "/auth/callback";
 
-console.log(`URLLLLL`, REDIRECT_URI, process.env.VERCEL_PROJECT_PRODUCTION_URL)
+console.log(`URLLLLL`, REDIRECT_URI, process.env.NEXT_PUBLIC_URLL)
