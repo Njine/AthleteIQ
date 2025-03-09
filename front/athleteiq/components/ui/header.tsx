@@ -25,8 +25,8 @@ export default function Header() {
   }, [])
   
   const navItems = [
-    { name: "Leaderboards", href: "/" },
-    { name: "Top Players", href: "#" },
+    { name: "Leaderboard", href: "/leaderboard" },
+    { name: "Top Players", href: "/leaderboard" },
     { name: "Market Place", href: "/marketplace" },
     { name: "Partners", href: "#" },
     { name: "Sports Article", href: "#" },

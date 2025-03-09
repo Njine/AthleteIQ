@@ -49,3 +49,9 @@ export interface KeylessAccount {
   jwt: string;
   decodedJwt: EncryptedScopedIdToken;
 }
+
+export interface ZkLoginResponse {
+  success: boolean;
+  message?: string;
+  proof?: any;
+}
