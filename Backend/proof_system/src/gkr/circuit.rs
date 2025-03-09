@@ -19,6 +19,25 @@ pub enum Gate {
     Input {
         id: usize,
     },
+    // Example: A gate type for ReLU (you might need more specific gates)
+    Relu {
+        id: usize,
+        input: usize,
+    },
+    Conv {
+        id: usize,
+        input: usize,
+    },
+    Gemm {
+        id: usize,
+        input1: usize,
+        input2: usize,
+    },
+    MaxPool {
+        id: usize,
+        input: usize,
+    },
+    // ... other gate types
 }
 
 /// Represents a wire connecting two gates.

@@ -70,6 +70,46 @@ impl Prover {
                         Gate::Input { id } => {
                             // Input gates are already handled in the initialization step
                         }
+                        Gate::Relu { id, input } => {
+                            let input_vec = layer_values[layer_idx - 1].get(input).unwrap_or(&_mm256_set1_epi64x(0));
+                            // Approximation: ReLU is max(0, x).  We'll use a simplified version for now.
+                            // A proper implementation would likely involve more gates for comparison.
+                            let zero_vec = _mm256_set1_epi64x(0);
+                            let relu_output = _mm256_max_epi64(*input_vec, zero_vec); // Placeholder SIMD max
+                            current_layer.insert(gate_id, relu_output);
+                        }
+                        Gate::Conv { id, input } => {
+                            let input_vec = layer_values[layer_idx - 1].get(input).unwrap_or(&_mm256_set1_epi64x(0));
+                            // Convolution is complex. This is a placeholder.
+                            // A full implementation would require handling kernel weights, strides, etc.
+                            // For a truly SIMD-optimized Conv, you'd need to restructure data
+                            // and use SIMD to perform multiple multiplications and additions in parallel.
+                            // This is a simplified placeholder.
+                            // Example: Assume you have a kernel loaded into a SIMD vector (kernel_vec).
+                            // let conv_output = _mm256_mul_epi64(input_vec, kernel_vec); // Placeholder
+                            current_layer.insert(gate_id, *input_vec); // Placeholder
+                        }
+                        Gate::Gemm { id, input1, input2 } => {
+                            let input1_vec = layer_values[layer_idx - 1].get(input1).unwrap_or(&_mm256_set1_epi64x(0));
+                            let input2_vec = layer_values[layer_idx - 1].get(input2).unwrap_or(&_mm256_set1_epi64x(0));
+                            // General Matrix Multiplication is also complex. Placeholder.
+                            // A SIMD-optimized Gemm would involve packing portions of the matrices
+                            // into SIMD vectors and performing parallel multiplications and additions.
+                            // This is a simplified placeholder.
+                            // Example: Assume you have parts of the matrices loaded into SIMD vectors.
+                            // let gemm_output = _mm256_mul_epi64(input1_vec, input2_vec); // Placeholder
+                            current_layer.insert(gate_id, *input1_vec); // Placeholder
+                        }
+                         Gate::MaxPool { id, input } => {
+                            let input_vec = layer_values[layer_idx - 1].get(input).unwrap_or(&_mm256_set1_epi64x(0));
+                            // Max Pooling. Placeholder.
+                            // A SIMD-optimized MaxPool would involve loading portions of the pooling window
+                            // into SIMD vectors and using SIMD to find the maximum value in parallel.
+                            // This is a simplified placeholder.
+                            // Example: Assume you have a pooling window loaded into a SIMD vector.
+                            // let max_output = _mm256_max_epi64(input_vec, other_values_in_window); // Placeholder
+                            current_layer.insert(gate_id, *input_vec); // Placeholder
+                        }
                         // ... (Handle other gate types)
                     }
                 }
@@ -106,10 +146,10 @@ impl Prover {
         //  - Iterating through the gates in the layer
         //  - Calculating sums of gate values
         //  - Creating proof messages (e.g., coefficients of polynomials)
-        //  - Using SIMD for field arithmetic
-        //  - Potentially using helper functions from utils.rs (e.g., bit reversal)
+        //  - Interacting with the verifier (in a complete implementation).
+        //  - Using SIMD for field arithmetic.
 
-        // Placeholder: Return some dummy data
+        // For this placeholder, let's return a dummy value.
         vec![_mm256_set1_epi64x(1)]
     }
 
@@ -124,10 +164,10 @@ impl Prover {
         // ... (Multilinear evaluation logic)
         // This will involve:
         //  - Iterating through the gates in the layer
-        //  - Evaluating the multilinear extension of the gate values at the given point
-        //  - Using SIMD for field arithmetic
-        //  - Potentially using helper functions from utils.rs
-        // Placeholder: Return a dummy value
+        //  - Evaluating the multilinear extension of the gate values at a given point.
+        //  - Using SIMD for field arithmetic.
+
+        // For this placeholder, let's return a dummy value.
         _mm256_set1_epi64x(1)
     }
 
