@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-
+import { KEY_EXPIRY } from '@/lib/constants'
 export interface EphemeralKeyPair {
   privateKey: string;
   publicKey: string;
@@ -45,13 +45,20 @@ export const validateEphemeralKeyPair = (
  * Create a new ephemeral key pair with a random private key and nonce.
  */
 export const createEphemeralKeyPair = ({
-  expiryDateSecs = BigInt(Math.floor(Date.now() / 1000)) + BigInt(24 * 60 * 60),
+  expiryDateSecs = BigInt(Math.floor(Date.now() / 1000)) + BigInt(KEY_EXPIRY),
 }: { expiryDateSecs?: bigint } = {}): EphemeralKeyPair => {
-  // Generate random wallet
-  const wallet = ethers.Wallet.createRandom();
+  const currentTime = Math.floor(Date.now() / 1000);
+  const maxEpoch = currentTime + KEY_EXPIRY;
   
-  // Generate a nonce
-  const nonce = ethers.randomBytes(16).toString('hex');
+  // Generate an ephemeral key pair
+  const wallet = ethers.Wallet.createRandom();
+  const randomness = ethers.hexlify(ethers.randomBytes(32));
+
+  const nonceData = ethers.solidityPacked(
+    ["address", "uint256", "bytes32"],
+    [wallet.address, maxEpoch, randomness]
+  );
+  const nonce = ethers.keccak256(nonceData);
   
   return {
     privateKey: wallet.privateKey,

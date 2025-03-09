@@ -3,8 +3,8 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { LocalStorageKeys } from "./constants";
 import { validateIdToken } from "./idToken";
 import { EphemeralKeyPair, validateEphemeralKeyPair, isValidEphemeralKeyPair } from "./ephemeral";
-import { EncryptedScopedIdToken, KeylessAccount } from "./types";
-import { KeylessAccountEncoding, deriveKeylessAccount, validateKeylessAccount } from "./keyless";
+import { KeylessAccount } from "./types";
+import { deriveKeylessAccount, validateKeylessAccount } from "./keyless";
 
 interface KeylessAccountsState {
   accounts: KeylessAccount[];
@@ -102,8 +102,25 @@ export const useKeylessAccounts = create<
           );
         }
 
+        // Fetch salt from API
+        let salt;
+        try {
+          const res = await fetch("/api/auth/salt", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ jwt: idToken }),
+          });
+
+          if (!res.ok) throw new Error("Failed to fetch salt");
+          const data = await res.json();
+          salt = data.salt;
+        } catch (error) {
+          throw new Error(`switchKeylessAccount: Salt retrieval failed - ${error}`);
+        }
         // Derive the keyless account
-        const activeAccount = await deriveKeylessAccount(idToken, ephemeralKeyPair);
+        const activeAccount = await deriveKeylessAccount(idToken, salt, ephemeralKeyPair);
 
         // Update the state with the new account
         set((state) => {

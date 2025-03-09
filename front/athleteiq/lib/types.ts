@@ -45,6 +45,7 @@ export interface KeylessAccount {
     nonce: string;
     expiryDateSecs: bigint;
   };
+  salt: string;
   jwt: string;
   decodedJwt: EncryptedScopedIdToken;
 }

@@ -13,4 +13,6 @@ export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 
 export const REDIRECT_URI = (process.env.NEXT_PUBLIC_URLL || "http://localhost:3000") + "/auth/callback";
 
-console.log(`URLLLLL`, REDIRECT_URI, process.env.NEXT_PUBLIC_URLL)
+export const JWT_SECRET = process.env.JWT_SECRET || "superstrongkey"
+
+export const KEY_EXPIRY = 86400;

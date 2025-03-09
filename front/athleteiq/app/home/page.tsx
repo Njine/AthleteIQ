@@ -1,8 +1,8 @@
 'use client'
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useKeylessAccounts } from '../../lib/useKeylessAccounts';
-import { collapseAddress } from '../../lib/utils';
+import { useKeylessAccounts } from '@/lib/useKeylessAccounts';
+import { collapseAddress } from '@/lib/utils';
 
 export default function HomePage() {
   const router = useRouter();

@@ -18,6 +18,7 @@ export const KeylessAccountEncoding = {
       expiryDateSecs: BigInt(e.ephemeralKeyPair.expiryDateSecs),
     },
     jwt: e.jwt,
+    salt: e.salt,
     decodedJwt: e.decodedJwt,
   }),
   encode: (e: KeylessAccount) => ({
@@ -31,6 +32,7 @@ export const KeylessAccountEncoding = {
       expiryDateSecs: e.ephemeralKeyPair.expiryDateSecs.toString(),
     },
     jwt: e.jwt,
+    salt: e.salt,
     decodedJwt: e.decodedJwt,
   }),
 };
@@ -40,23 +42,23 @@ export const KeylessAccountEncoding = {
  */
 export const deriveKeylessAccount = async (
   jwt: string,
+  salt: string,
   ephemeralKeyPair: EphemeralKeyPair
 ): Promise<KeylessAccount> => {
   const decodedJwt = decodeIdToken(jwt);
-  console.log(decodedJwt.sub, ephemeralKeyPair.nonce, ephemeralKeyPair.privateKey);
   
   // Create a deterministic seed from the JWT subject and the ephemeral key
   const seed = ethers.solidityPackedKeccak256(
-    ['string', 'string', 'string'],
-    [decodedJwt.sub, ephemeralKeyPair.nonce, ephemeralKeyPair.privateKey]
+    ['string', 'string', 'string', 'string'],
+    [decodedJwt.sub, decodedJwt.email, decodedJwt.aud, salt, ]
   );
-  
   // Create a deterministic wallet from the seed
   const wallet = new ethers.Wallet(seed);
   
   return {
     address: wallet.address,
     ephemeralKeyPair,
+    salt,
     jwt,
     decodedJwt,
   };

@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useKeylessAccounts } from '../../../lib/useKeylessAccounts';
+import { useKeylessAccounts } from '@/lib/useKeylessAccounts';
 
 export default function CallbackPage() {
   const isLoading = useRef(false);
