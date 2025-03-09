@@ -138,6 +138,6 @@ Licensed under the GPLv3 License
 - Njine - [GitHub](https://github.com/Njine/) / [Twitter](https://x.com/_) / [LinkedIn](https://www.linkedin.com/in/_/)
 - Kedir Jabir - [GitHub](https://github.com/IbnuJabir) / [Twitter](https://x.com/Ibnu_J1) / [LinkedIn](https://www.linkedin.com/in/ibnu-jabir/)
 - Noor Amjad - [GitHub](https://github.com/Justxd22) / [Twitter](https://twitter.com/_xd222) / [LinkedIn](https://www.linkedin.com/in/noor-amjad-xd)
-- _ - [GitHub](https://github.com/_) / [Twitter](https://x.com/_) / [LinkedIn](https://linkedin.com/_)
+- _AYOUB ZAKARYA - [GitHub]((https://github.com/aybzakaria5/)) / [Twitter](https://x.com/Zack5ayb_) / [LinkedIn]((https://www.linkedin.com/in/ayoubzakarya/)_)
 - Betty - 
 
