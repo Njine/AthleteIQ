@@ -24,8 +24,11 @@ contract AthleteProfile {
     // Mapping from athlete address to their profile
     mapping(address => Athlete) public athletes;
 
+    // Mapping from zk-derived address to athlete address
+    mapping(bytes32 => address) public userToAthlete;
+
     // Array to store all athlete addresses
-    address[] public athleteAddresses;
+    addresspublic athleteAddresses;
 
     // Event to emit when a profile is created or updated
     event ProfileUpdated(
@@ -133,6 +136,9 @@ contract AthleteProfile {
         if (!isAthlete(athleteAddress)) {
             athleteAddresses.push(athleteAddress);
         }
+
+        // Map the user identifier to the athlete address
+        userToAthlete[_derivedAddress] = athleteAddress;
     }
 
     /**
@@ -289,5 +295,13 @@ contract AthleteProfile {
     function updateITENPointsAddress(address _itenPointsAddress) public {
         require(msg.sender == admin, "Only admin can update ITENPoints address");
         itenPoints = ITENPoints(_itenPointsAddress);
+    }
+
+    /**
+     * @dev Gets the athlete address associated with a user identifier.
+     * @param _userIdentifier The user identifier.
+     */
+    function getAthleteByUserIdentifier(bytes32 _userIdentifier) public view returns (address) {
+        return userToAthlete[_userIdentifier];
     }
 }

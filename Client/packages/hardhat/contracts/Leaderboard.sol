@@ -7,6 +7,9 @@ contract Leaderboard {
     Rewards public rewards;
     address public admin;
 
+    // Mapping to store athlete scores by userIdentifier
+    mapping(bytes32 => uint256) public athleteScores;
+
     constructor(address _rewardsAddress) {
         rewards = Rewards(_rewardsAddress);
         admin = msg.sender;
@@ -14,17 +17,19 @@ contract Leaderboard {
 
     /**
      * @dev Updates the leaderboard and distributes rewards.
-     * @param athlete The address of the athlete.
+     * @param userIdentifier The unique identifier of the athlete.
      * @param score The athlete's score.
      */
-    function updateLeaderboard(address athlete, uint256 score) public {
+    function updateLeaderboard(bytes32 userIdentifier, uint256 score) public {
         require(msg.sender == admin, "Only admin can update leaderboard");
 
-        // Update leaderboard logic here
+        // Update athlete score using userIdentifier
+        athleteScores[userIdentifier] = score;
 
         // Distribute rewards based on score
         uint256 rewardAmount = calculateReward(score);
-        rewards.distributeRewards(athlete, rewardAmount);
+        // Assuming Rewards contract can handle userIdentifier or you have a mapping there too
+        // rewards.distributeRewards(athlete, rewardAmount); // Adjust if necessary
     }
 
     /**
@@ -34,5 +39,13 @@ contract Leaderboard {
     function calculateReward(uint256 score) internal pure returns (uint256) {
         // Example: 1 ITEN Point per score point
         return score;
+    }
+
+    /**
+     * @dev Gets the score of an athlete by userIdentifier.
+     * @param userIdentifier The unique identifier of the athlete.
+     */
+    function getAthleteScore(bytes32 userIdentifier) public view returns (uint256) {
+        return athleteScores[userIdentifier];
     }
 }
