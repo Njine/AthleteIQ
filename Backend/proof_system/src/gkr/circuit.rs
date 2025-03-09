@@ -53,9 +53,12 @@ pub struct Wire {
 pub struct Circuit {
     pub gates: HashMap<usize, Gate>,
     pub wires: Vec<Wire>,
-    pub input_gate_ids: Vec<usize>, // IDs of the input gates
-    pub output_gate_ids: Vec<usize>, // IDs of the output gates
-    pub num_layers: usize,       // Number of layers in the circuit
+    pub input_gate_ids: Vec<usize>,       // IDs of the input gates
+    pub output_gate_ids: Vec<usize>,      // IDs of the output gates
+    pub num_layers: usize,                // Number of layers in the circuit
+    pub gates_per_layer: Vec<usize>,      // Number of gates per layer
+    pub layer_gate_ids: Vec<Vec<usize>>,  // Gate IDs for each layer
+    pub layer_gate_indices: Vec<HashMap<usize, usize>>, // Gate ID to index mapping
 }
 
 impl Circuit {
@@ -66,6 +69,9 @@ impl Circuit {
         input_gate_ids: Vec<usize>,
         output_gate_ids: Vec<usize>,
         num_layers: usize,
+        gates_per_layer: Vec<usize>,
+        layer_gate_ids: Vec<Vec<usize>>,
+        layer_gate_indices: Vec<HashMap<usize, usize>>,
     ) -> Self {
         Circuit {
             gates,
@@ -73,6 +79,9 @@ impl Circuit {
             input_gate_ids,
             output_gate_ids,
             num_layers,
+            gates_per_layer,
+            layer_gate_ids,
+            layer_gate_indices,
         }
     }
 
