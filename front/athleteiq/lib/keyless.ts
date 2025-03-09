@@ -2,7 +2,7 @@
 import { ethers } from 'ethers';
 import { EphemeralKeyPair, isValidEphemeralKeyPair } from './ephemeral';
 import { decodeIdToken, isValidIdToken } from './idToken';
-import { KeylessAccount } from './types';
+import { KeylessAccount, ZkLoginResponse } from './types';
 
 /**
  * Encoding for the KeylessAccount class to be stored in localStorage
@@ -79,3 +79,47 @@ export const validateKeylessAccount = (
   decodeIdToken(account.jwt).nonce === account.ephemeralKeyPair.nonce
     ? account
     : undefined;
+
+
+/**
+ * Get a ZK proof from the proving service
+ */
+// export async function getZkProof(
+//   jwt: string, 
+//   salt: string, 
+//   ephemeralPublicKey: string,
+//   maxEpoch: number,
+//   randomness: string
+// ): Promise<ZkLoginResponse> {
+//   try {
+//     const payload = JSON.stringify({
+//       jwt,
+//       salt,
+//       maxEpoch,
+//       ephemeralPublicKey,
+//       randomness,
+//     });
+    
+//     const response = await fetch(ZK_PROVER_URL, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: payload,
+//     });
+    
+//     if (!response.ok) {
+//       throw new Error(`ZK prover returned ${response.status}`);
+//     }
+    
+//     const data = await response.json();
+//     return {
+//       success: true,
+//       proof: data,
+//     };
+//   } catch (error) {
+//     console.error("Failed to get ZK proof:", error);
+//     return {
+//       success: false,
+//       message: `Failed to get ZK proof: ${error}`,
+//     };
+//   }
+// }

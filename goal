@@ -1,0 +1,26 @@
+r = random pepper to blind addr
+esk = ephemeral secret key
+epk = ephemeral public key of esk
+σG = OIDC signature over Google JWT 
+σeph = ephemeral signature under epk over TXN and ZKP 
+ρ = EPK blinder
+
+relation R(x, w) Known to prover & verifier
+x = Public statement: Both prover and verifier have this.
+w = Private witness Only prover has it. Must remain hidden from verifier.
+
+
+0. issue google login with random nonce
+1. get jwt with nonce 
+2. derive salt from JWT info (sub, aud, email iss) using crypto.hkdfSync('sha256', ...)
+3. derive Walletkey from salt + JWT.sub + JWT.aud using ethers.keccak256(...)
+4. zkproofs will be done later using epk and nonce 
+
+
+i need salt !!!!!!!!!!!!!!!!!!!1!!!
+
+ - derive salt from jwt ==>>> salt: sub, iss, sud, email, aud == application = azp,  iss == goog,   
+ - salt db 
+ - ask user for salt
+
+pepper:
