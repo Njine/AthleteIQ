@@ -1,6 +1,6 @@
 use pyo3::prelude::*;
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
-use gkr::prover::Expander;
+use poly_commit::PCSForExpanderGKR;
 
 /// Generate a proof from an input file path
 #[pyfunction]
