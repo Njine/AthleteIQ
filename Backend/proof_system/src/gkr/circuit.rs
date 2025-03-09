@@ -1,0 +1,64 @@
+// proof_system/src/gkr/circuit.rs
+
+use std::collections::HashMap;
+
+/// Represents a gate in the arithmetic circuit.
+#[derive(Debug, Clone)]
+pub enum Gate {
+    Add {
+        id: usize,
+        input1: usize,
+        input2: usize,
+    },
+    Mul {
+        id: usize,
+        input1: usize,
+        input2: usize,
+    },
+    // Add other gate types as needed (e.g., constants, inputs)
+    Input {
+        id: usize,
+    },
+}
+
+/// Represents a wire connecting two gates.
+#[derive(Debug, Clone)]
+pub struct Wire {
+    pub from_gate: usize,
+    pub to_gate: usize,
+    pub to_input: usize, // Which input of the 'to_gate' this wire connects to
+}
+
+/// Represents the entire arithmetic circuit.
+#[derive(Debug, Clone)]
+pub struct Circuit {
+    pub gates: HashMap<usize, Gate>,
+    pub wires: Vec<Wire>,
+    pub input_gate_ids: Vec<usize>, // IDs of the input gates
+    pub output_gate_ids: Vec<usize>, // IDs of the output gates
+    pub num_layers: usize,       // Number of layers in the circuit
+}
+
+impl Circuit {
+    /// Creates a new circuit.
+    pub fn new(
+        gates: HashMap<usize, Gate>,
+        wires: Vec<Wire>,
+        input_gate_ids: Vec<usize>,
+        output_gate_ids: Vec<usize>,
+        num_layers: usize,
+    ) -> Self {
+        Circuit {
+            gates,
+            wires,
+            input_gate_ids,
+            output_gate_ids,
+            num_layers,
+        }
+    }
+
+    // Add methods for:
+    // - Getting a gate by its ID
+    // - Getting the inputs of a gate
+    // - (Optional) Methods for circuit traversal or manipulation
+}
