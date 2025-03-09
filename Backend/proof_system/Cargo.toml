@@ -1,0 +1,17 @@
+[package]
+name = "proof_system"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gkr = { path = "../expander/gkr" }
+poly_commit = { path = "../expander/poly_commit" }
+polynomials = { path = "../expander/arith/polynomials" }
+pyo3 = { version = "0.19", features = ["extension-module"] }
+
+[lib]
+name = "proof_system"
+crate-type = ["cdylib"]
+
+[profile.release]
+lto = true
