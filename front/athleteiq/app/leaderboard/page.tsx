@@ -581,7 +581,7 @@ export default function LeaderboardPage() {
                 <div className="relative w-full max-w-[300px] aspect-square overflow-hidden rounded-xl border border-purple-500/30 shadow-lg shadow-pink-500/20">
                   <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/30 to-pink-500/30 mix-blend-overlay z-10 pointer-events-none"></div>
                   <Image
-                    src="/placeholder.svg?height=300&width=300"
+                    src="/x3.jpg"
                     alt="Verified Athlete"
                     fill
                     className="object-cover transition-transform group-hover:scale-105 duration-500 rounded-xl"

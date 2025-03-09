@@ -12,6 +12,19 @@ export default function HomePage() {
     if (!activeAccount) router.push('/login');
   }, [activeAccount, router]);
 
+  useEffect(() => {
+    if (!activeAccount) {
+      router.push('/login');
+    } else {
+      const timeout = setTimeout(() => {
+        router.push('/register');
+      }, 3000);
+  
+      return () => clearTimeout(timeout);
+    }
+  }, [activeAccount, router]);
+  
+
   return (
     <div className="flex flex-col items-center justify-center h-screen w-screen px-4">
       <div>
@@ -54,15 +67,17 @@ export default function HomePage() {
           
           <div className="mt-4">
             <h2 className="text-xl font-semibold mb-2">Your Ethereum Address</h2>
-            <p className="bg-gray-100 p-2 rounded break-all">{activeAccount?.address}</p>
+            <p className="border p-2 rounded break-all">{activeAccount?.address}</p>
           </div>
           
           <button
-            className="flex justify-center bg-red-50 items-center border border-red-200 rounded-lg px-8 py-2 shadow-sm shadow-red-300 hover:bg-red-100 active:scale-95 transition-all mt-4"
+            className="flex justify-center bg-red-500 items-center border border-red-200 rounded-lg px-8 py-2 shadow-sm shadow-red-300 hover:bg-red-300 active:scale-95 transition-all mt-4"
             onClick={disconnectKeylessAccount}
           >
             Logout
           </button>
+          <br></br>
+          <h2 className="text-xl font-semibold mb-2">Redirecting to Register....</h2>
         </div>
       </div>
     </div>

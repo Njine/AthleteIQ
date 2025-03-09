@@ -1,12 +1,16 @@
 "use client"
 
 import { RegistrationForm } from "@/components/registration/registration-form"
+import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { Bluetooth, Watch, Zap, ChevronRight, Shield } from "lucide-react"
 import { useState } from "react"
+import { useRouter } from 'next/navigation';
+
 
 export default function Home() {
   const [isConnecting, setIsConnecting] = useState(false)
+  const router = useRouter();
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -141,6 +145,14 @@ export default function Home() {
           className="w-full lg:w-2/3"
         >
           <RegistrationForm />
+          <Button
+            className="mt-4 w-full w-full max-w-2xl flex items-center gap-2 bg-gradient-to-b from-[#F1039C] to-transparent hover:from-pink-600 hover:to-purple-700 text-white border-0"
+            style={{ backgroundImage: "linear-gradient(220deg,rgba(241, 3, 158, 0.39) -5.33%, rgba(255, 255, 255, 0) 156.4%)" }}
+            onClick={() => router.push('/leaderboard')}
+          >
+            Skip <ChevronRight className="h-4 w-4" />
+          </Button>
+
         </motion.div>
       </div>
     </main>
