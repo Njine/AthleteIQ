@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Shield, Zap } from 'lucide-react';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 
 import { BasicInfoStep } from "./steps/basic-info-step";
 import { ExerciseHabitsStep } from "./steps/exercise-habits-step";
@@ -20,10 +19,10 @@ import { LifestyleStep } from "./steps/lifestyle-step";
 import { PerformanceStep } from "./steps/performance-step";
 
 const steps = [
-  { title: "Basic Info", component: BasicInfoStep },
-  { title: "Exercise Habits", component: ExerciseHabitsStep },
-  { title: "Lifestyle", component: LifestyleStep },
-  { title: "Performance", component: PerformanceStep },
+  { title: "Basic Info", component: BasicInfoStep, icon: Shield },
+  { title: "Exercise Habits", component: ExerciseHabitsStep, icon: Zap },
+  { title: "Lifestyle", component: LifestyleStep, icon: Shield },
+  { title: "Performance", component: PerformanceStep, icon: Zap },
 ];
 
 export function RegistrationForm() {
@@ -35,6 +34,7 @@ export function RegistrationForm() {
   const [shakeError, setShakeError] = useState(false);
 
   const StepComponent = steps[currentStep].component;
+  const CurrentIcon = steps[currentStep].icon;
 
   const updateFormData = (data: Record<string, any>) => {
     setFormData((prev) => ({ ...prev, ...data }));
@@ -135,25 +135,58 @@ export function RegistrationForm() {
   };
 
   return (
-    <Card className="w-full max-w-2xl backdrop-blur-md bg-white/30 border-none shadow-lg">
-      <CardHeader className="bg-gradient-to-r from-[#F1039C] to-transparent">
-        <CardTitle className="text-pink-400">
-          {steps[currentStep].title}
-        </CardTitle>
-        <Progress
-          value={((currentStep + 1) / steps.length) * 100}
-          className="h-2 mt-2"
-          indicatorClassName="bg-gradient-to-r from-[#F1039C] to-pink-300"
-        />
+    <Card className="w-full max-w-2xl rounded-xl border border-purple-500/30 bg-black/40 backdrop-blur-sm shadow-lg shadow-purple-500/10 overflow-hidden">
+      <CardHeader className="relative p-6 border-b border-purple-500/30">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#F1039C] via-purple-500 to-transparent"></div>
+        
+        <div className="flex items-center gap-3">
+          <div className="rounded-lg bg-pink-500/20 p-2">
+            <CurrentIcon className="h-5 w-5 text-pink-400" />
+          </div>
+          <CardTitle className="text-white text-xl">{steps[currentStep].title}</CardTitle>
+        </div>
+        
+        <div className="mt-4 flex items-center">
+          <div className="w-full bg-gray-700/30 h-2 rounded-full overflow-hidden">
+            <motion.div 
+              className="h-full bg-gradient-to-r from-[#F1039C] to-purple-500"
+              initial={{ width: `${((currentStep) / steps.length) * 100}%` }}
+              animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+              transition={{ duration: 0.5 }}
+            />
+          </div>
+          <div className="ml-3 text-sm text-gray-400">
+            {currentStep + 1}/{steps.length}
+          </div>
+        </div>
+        
+        <div className="mt-4 flex">
+          {steps.map((step, index) => (
+            <div 
+              key={index} 
+              className={`flex-1 text-center text-xs ${
+                index === currentStep 
+                  ? 'text-pink-400' 
+                  : index < currentStep 
+                    ? 'text-green-400' 
+                    : 'text-gray-500'
+              }`}
+            >
+              {step.title}
+            </div>
+          ))}
+        </div>
       </CardHeader>
-      <CardContent className="text-pink-400">
+      
+      <CardContent className="p-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
+            className="text-white"
           >
             <StepComponent
               formData={formData}
@@ -164,30 +197,40 @@ export function RegistrationForm() {
           </motion.div>
         </AnimatePresence>
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={prevStep}
-          disabled={currentStep === 0}
-          className="flex items-center gap-1 bg-transparent border-pink-400 text-pink-400 hover:bg-pink-400/10"
-        >
-          <ChevronLeft className="h-4 w-4" /> Back
-        </Button>
-        {currentStep === steps.length - 1 ? (
+      
+      <CardFooter className="flex justify-between p-6 border-t border-purple-500/30 bg-black/20">
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
-            onClick={handleSubmit}
-            className="flex items-center gap-1 bg-[#F1039C] hover:bg-[#F1039C]/80"
+            variant="outline"
+            onClick={prevStep}
+            disabled={currentStep === 0}
+            className={`flex items-center gap-2 border-purple-500/50 text-white hover:bg-purple-500/10 ${
+              currentStep === 0 ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            Submit
+            <ChevronLeft className="h-4 w-4" /> Back
           </Button>
-        ) : (
-          <Button
-            onClick={nextStep}
-            className="flex items-center gap-1 bg-[#F1039C] hover:bg-[#F1039C]/80"
-          >
-            Next <ChevronRight className="h-4 w-4" />
-          </Button>
-        )}
+        </motion.div>
+        
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          {currentStep === steps.length - 1 ? (
+            <Button
+              onClick={handleSubmit}
+              className="flex items-center gap-2 bg-gradient-to-b from-[#F1039C] to-transparent hover:from-pink-600 hover:to-purple-700 text-white border-0"
+              style={{ backgroundImage: "linear-gradient(220deg, #F1039C -5.33%, rgba(255, 255, 255, 0) 156.4%)" }}
+            >
+              Complete Registration <Zap className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button
+              onClick={nextStep}
+              className="flex items-center gap-2 bg-gradient-to-b from-[#F1039C] to-transparent hover:from-pink-600 hover:to-purple-700 text-white border-0"
+              style={{ backgroundImage: "linear-gradient(220deg, #F1039C -5.33%, rgba(255, 255, 255, 0) 156.4%)" }}
+            >
+              Next <ChevronRight className="h-4 w-4" />
+            </Button>
+          )}
+        </motion.div>
       </CardFooter>
     </Card>
   );
