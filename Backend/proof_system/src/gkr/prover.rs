@@ -1,5 +1,3 @@
-// proof_system/src/gkr/prover.rs
-
 use core::arch::x86_64::*;
 use std::collections::HashMap;
 
@@ -164,7 +162,7 @@ impl Prover {
     /// SIMD-optimized general matrix multiplication.
     /// gate_id: The ID of the Gemm gate, used to retrieve the weight matrix.
     /// input1_vec: The input vector (or a portion of it).
-    /// input2_vec: Placeholder (not directly used in this implementation, 
+    /// input2_vec: Placeholder (not directly used in this implementation,
     ///              as we fetch weights from circuit.gemm_weights).
     unsafe fn simd_gemm(gate_id: usize, input1_vec: __m256i, input2_vec: __m256i) -> __m256i {
         // 1. Retrieve the weight matrix from circuit.gemm_weights
@@ -195,19 +193,51 @@ impl Prover {
         let mut output = vec![0.0; cols_b];
 
         // 4. Matrix Multiplication Logic (SIMD-optimized)
-        // This is a simplified example and needs further optimization
+        // This is a more complete example with SIMD intrinsics
         for i in 0..rows_a {
-            for j in 0..cols_b {
-                let mut sum = 0.0;
+            for j in (0..cols_b).step_by(8) { // Process output in blocks of 8
+                // Initialize SIMD accumulator
+                let mut sum_vec = _mm256_setzero_ps();
+
                 for k in 0..cols_a {
-                    // --- SIMD Implementation (Illustrative) ---
-                    // Load input and weights into SIMD registers
-                    // Perform SIMD multiplications and additions
-                    // Accumulate the result
-                    // ---
-                    sum += self.get_matrix_element(input1_vec, i, k) * weights[k * cols_b + j]; // Access column-major weights
+                    // --- SIMD Implementation ---
+                    // a) Load input vector element (replicated into SIMD register)
+
+                    // Determine which __m256i vector to use
+                    let input_vec_index = k / 8;
+
+                    // Placeholder: Get the correct __m256i input vector
+                    // You'll need to store the input vector as a Vec<__m256i>
+                    // and access it using input_vec_index
+                    let current_input_vec: __m256i = input1_vec; // Placeholder
+
+                    let input_val = self.get_matrix_element(current_input_vec, i, k);
+                    let input_simd = _mm256_set1_ps(input_val);
+
+                    // b) Load 8 weight matrix elements
+                    let mut weight_simd = _mm256_setzero_ps();
+                    for offset in 0..8 {
+                        if j + offset < cols_b {
+                            weight_simd = _mm256_insert_ps(weight_simd, weights[k * cols_b + (j + offset)], offset as i32);
+                        }
+                    }
+
+                    // c) Fused Multiply-Add
+                    sum_vec = _mm256_fmadd_ps(input_simd, weight_simd, sum_vec);
                 }
-                output[j] = sum;
+
+                // --- Horizontal Summation and Store ---
+                // Perform horizontal summation of sum_vec and store the results
+                // This part needs to be optimized for efficiency
+                let mut temp = _mm256_hadd_ps(sum_vec, sum_vec);
+                temp = _mm256_hadd_ps(temp, temp);
+                let result_vec = _mm_add_ps(_mm256_extractf128_ps(temp, 0).into(), _mm256_extractf128_ps(temp, 1).into());
+
+                for offset in 0..8 {
+                    if j + offset < cols_b {
+                        output[j + offset] = _mm_extract_ps(result_vec.into(), offset as i32);
+                    }
+                }
             }
         }
 
@@ -225,7 +255,40 @@ impl Prover {
         // Implement logic to extract the element from the input_vec
         // based on the row and column indices.
         // This will depend on how the input vector is structured.
-        0.0 // Placeholder
+
+        // --- Implementation based on Possibility 1 ---
+
+        // Assuming input1_vec is part of a series of __m256i vectors
+        // representing the input vector.
+        // 'row' is not used here as we are dealing with a vector (1D matrix)
+        // 'col' is the index of the element we want to access
+
+        // Determine which __m256i vector contains the element
+        let vec_index = col / 8;
+
+        // Determine the offset within the __m256i vector
+        let offset = col % 8;
+
+        // Extract the element from the __m256i vector
+        // (This is a simplified example, you might need to adjust based on how
+        //  you manage the series of __m256i input vectors)
+
+        // For this example, let's assume input_vec IS the correct __m256i
+        // (You'll need to manage the series of input vectors outside this function)
+
+        // Extract the float value from the __m256i vector
+        let mut temp_vec = _mm256_extractf128_ps(input_vec, 0).into();
+        if offset > 3 {
+            temp_vec = _mm256_extractf128_ps(input_vec, 1).into();
+        }
+        let mut result: f32 = 0.0;
+        if offset < 4 {
+            result = _mm_extract_ps(temp_vec, offset as i32);
+        } else {
+            result = _mm_extract_ps(temp_vec, (offset-4) as i32);
+        }
+
+        result
     }
 
     // Add other prover functions as needed
