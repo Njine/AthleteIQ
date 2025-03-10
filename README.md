@@ -3,6 +3,20 @@
 ## Overview
 **AthleteIQ** is a decentralized application designed to help athletes track their performance, manage training data, and receive AI-powered insights while ensuring data privacy through zero-knowledge proofs (ZKPs). The platform leverages blockchain technology for secure storage, smart contracts for reward distribution, and a tokenized incentive system to gamify training.
 
+## Live
+- [athlete-iq-nine.vercel.app](https://athlete-iq-nine.vercel.app/)
+
+## Demo
+- [youtube.com/watch?v=RCTMjqvU5bU](https://www.youtube.com/watch?v=RCTMjqvU5bU)
+
+## ScreenShots
+![Screenshot 1](.res/s1.png)  
+![Screenshot 2](.res/s2.png)  
+![Screenshot 3](.res/s3.png)  
+![Screenshot 4](.res/s4.png)  
+![Screenshot 5](.res/s5.png)  
+![Screenshot 6](.res/s6.png)  
+
 ## Features
 ### 1. Athlete Profile Management
 - Decentralized athlete profiles.
