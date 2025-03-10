@@ -22,6 +22,7 @@ pub fn build_circuit_from_onnx(onnx_model_path: &str) -> Result<Circuit, String>
     let mut output_gate_ids = Vec::new();
     let mut gate_id_counter: usize = 0;
     let mut num_layers: usize = 0;
+    let mut gemm_weights: HashMap<usize, Vec<f32>> = HashMap::new(); // Initialize gemm_weights
 
     // A map to store node output names and their corresponding gate IDs
     let mut node_outputs: HashMap<String, usize> = HashMap::new();
@@ -34,8 +35,7 @@ pub fn build_circuit_from_onnx(onnx_model_path: &str) -> Result<Circuit, String>
         let input_names: Vec<String> = (0..node.input_count())
             .map(|i| node.input_name(i).map_err(|e| e.to_string()))
             .collect::<Result<Vec<String>, String>>()?;
-        let output_names: Vec<String> = (0..node.output_count())
-            .map(|i| node.output_name(i).map_err(|e| e.to_string()))
+        let output_names: Vec<String> = (0..node.output_name(i).map_err(|e| e.to_string()))
             .collect::<Result<Vec<String>, String>>()?;
 
         // 3. Create GKR gates based on ONNX operators
@@ -71,8 +71,8 @@ pub fn build_circuit_from_onnx(onnx_model_path: &str) -> Result<Circuit, String>
                 store_output_gate_id(&mut node_outputs, &output_names, gate_id_counter);
                 gate_id_counter += 1;
             }
-            "Conv" => { // Example: Handling Convolution
-                let gate = Gate::Conv { // Or a specific ConvGate if needed
+            "Conv" => {
+                let gate = Gate::Conv {
                     id: gate_id_counter,
                     input: 0,
                 };
@@ -81,8 +81,8 @@ pub fn build_circuit_from_onnx(onnx_model_path: &str) -> Result<Circuit, String>
                 store_output_gate_id(&mut node_outputs, &output_names, gate_id_counter);
                 gate_id_counter += 1;
             }
-            "Relu" => { // Example: Handling ReLU
-                let gate = Gate::Relu { // Or a specific ReluGate if needed
+            "Relu" => {
+                let gate = Gate::Relu {
                     id: gate_id_counter,
                     input: 0,
                 };
@@ -100,6 +100,24 @@ pub fn build_circuit_from_onnx(onnx_model_path: &str) -> Result<Circuit, String>
                 gates.insert(gate_id_counter, gate);
                 create_wires_for_gate(&mut gates, &mut wires, &node_outputs, &input_names, gate_id_counter);
                 store_output_gate_id(&mut node_outputs, &output_names, gate_id_counter);
+
+                // --- Extract weights and convert to column-major ---
+                if let Some(weight_tensor) = node.input_by_index(1) { // Assuming weights are the second input
+                    if let Ok(float_data) = weight_tensor.float_data() {
+                        let dims = weight_tensor.dimensions().unwrap();
+                        let rows = dims[0];
+                        let cols = dims[1];
+
+                        let mut column_major_weights = Vec::with_capacity(float_data.len());
+                        for c in 0..cols {
+                            for r in 0..rows {
+                                column_major_weights.push(float_data[r * cols + c]);
+                            }
+                        }
+                        gemm_weights.insert(gate_id_counter, column_major_weights);
+                    }
+                }
+
                 gate_id_counter += 1;
             }
             "MaxPool" => {
@@ -112,16 +130,14 @@ pub fn build_circuit_from_onnx(onnx_model_path: &str) -> Result<Circuit, String>
                 store_output_gate_id(&mut node_outputs, &output_names, gate_id_counter);
                 gate_id_counter += 1;
             }
-            // Handle other ONNX operators (e.g., "MaxPool", "Gemm", etc.)
             _ => {
-                // For unsupported operations, you might return an error or skip them
                 println!("Unsupported ONNX operator: {}", op_type);
             }
         }
     }
 
     // 5. Determine the number of layers in the circuit
-    num_layers = calculate_num_layers(&gates, &wires, &input_gate_ids).unwrap_or(0); // Placeholder
+    num_layers = calculate_num_layers(&gates, &wires, &input_gate_ids).unwrap_or(0);
 
     // 6. Identify output gates
     output_gate_ids = identify_output_gates(&session, &node_outputs)?;
@@ -143,6 +159,7 @@ pub fn build_circuit_from_onnx(onnx_model_path: &str) -> Result<Circuit, String>
         gates_per_layer,
         layer_gate_ids,
         layer_gate_indices,
+        gemm_weights, // Pass gemm_weights to the Circuit
     );
 
     Ok(circuit)
@@ -203,8 +220,6 @@ fn calculate_gates_per_layer(
         }
     }
 
-    // Handle potential errors (e.g., cycle detection) - omitted for brevity
-
     (gates_per_layer, layer_gate_ids)
 }
 
@@ -249,7 +264,7 @@ fn create_wires_for_gate(
                         }
                     }
                     Gate::Mul { input1, input2, .. } => {
-                         if i == 0 {
+                        if i == 0 {
                             *input1 = *input_gate_id;
                         } else if i == 1 {
                             *input2 = *input_gate_id;
@@ -282,4 +297,85 @@ fn create_wires_for_gate(
             }
         }
     }
+}
+
+/// Helper function to extract weight data from an ONNX tensor (assuming float).
+fn extract_weight_data(tensor: &onnxruntime::Value) -> Result<Vec<f32>, String> {
+    if let Ok(float_data) = tensor.float_data() {
+        Ok(float_data)
+    } else {
+        Err("Failed to extract float data from tensor".to_string())
+    }
+}
+
+/// Helper function to identify output gates.
+fn identify_output_gates(
+    session: &onnxruntime::Session,
+    node_outputs: &HashMap<String, usize>,
+) -> Result<Vec<usize>, String> {
+    let mut output_gate_ids = Vec::new();
+    let graph = session.graph();
+    for output_idx in 0..graph.output_count() {
+        let output_name = graph.output_name(output_idx).map_err(|e| e.to_string())?;
+        if let Some(gate_id) = node_outputs.get(&output_name) {
+            output_gate_ids.push(*gate_id);
+        }
+    }
+    Ok(output_gate_ids)
+}
+
+/// Helper function to calculate the number of layers in the circuit.
+fn calculate_num_layers(
+    gates: &HashMap<usize, Gate>,
+    wires: &Vec<Wire>,
+    input_gate_ids: &Vec<usize>,
+) -> Result<usize, String> {
+    if gates.is_empty() {
+        return Ok(0);
+    }
+
+    let mut max_layer = 0;
+    let mut gate_layers: HashMap<usize, usize> = HashMap::new();
+
+    // Assign layer 0 to input gates
+    for &input_id in input_gate_ids.iter() {
+        gate_layers.insert(input_id, 0);
+    }
+
+    // Calculate layers for other gates based on their inputs
+    let mut changed = true;
+    while changed {
+        changed = false;
+        for (gate_id, gate) in gates.iter() {
+            if gate_layers.contains_key(gate_id) {
+                continue; // Already assigned a layer
+            }
+
+            match gate {
+                Gate::Add { input1, input2, .. } |
+                Gate::Mul { input1, input2, .. } |
+                Gate::Gemm { input1, input2, .. } => {
+                    if let (Some(&layer1), Some(&layer2)) = (gate_layers.get(input1), gate_layers.get(input2)) {
+                        let layer = std::cmp::max(layer1, layer2) + 1;
+                        gate_layers.insert(*gate_id, layer);
+                        max_layer = std::cmp::max(max_layer, layer);
+                        changed = true;
+                    }
+                }
+                Gate::Relu { input, .. } |
+                Gate::Conv { input, .. } |
+                Gate::MaxPool { input, .. } => {
+                    if let Some(&layer) = gate_layers.get(input) {
+                        let layer = layer + 1;
+                        gate_layers.insert(*gate_id, layer);
+                        max_layer = std::cmp::max(max_layer, layer);
+                        changed = true;
+                    }
+                }
+                Gate::Input { .. } => {} // Input gates already handled
+            }
+        }
+    }
+
+    Ok(max_layer + 1) // Add 1 to account for layer 0
 }

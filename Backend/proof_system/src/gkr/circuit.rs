@@ -59,6 +59,7 @@ pub struct Circuit {
     pub gates_per_layer: Vec<usize>,      // Number of gates per layer
     pub layer_gate_ids: Vec<Vec<usize>>,  // Gate IDs for each layer
     pub layer_gate_indices: Vec<HashMap<usize, usize>>, // Gate ID to index mapping
+    pub gemm_weights: HashMap<usize, Vec<f32>>, // Store column-major weights for Gemm gates
 }
 
 impl Circuit {
@@ -72,6 +73,7 @@ impl Circuit {
         gates_per_layer: Vec<usize>,
         layer_gate_ids: Vec<Vec<usize>>,
         layer_gate_indices: Vec<HashMap<usize, usize>>,
+        gemm_weights: HashMap<usize, Vec<f32>>,
     ) -> Self {
         Circuit {
             gates,
@@ -82,6 +84,7 @@ impl Circuit {
             gates_per_layer,
             layer_gate_ids,
             layer_gate_indices,
+            gemm_weights,
         }
     }
 
