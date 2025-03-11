@@ -1,5 +1,3 @@
-// proof_system/src/gkr/circuit.rs
-
 use std::collections::HashMap;
 
 /// Represents a gate in the arithmetic circuit.
@@ -15,11 +13,9 @@ pub enum Gate {
         input1: usize,
         input2: usize,
     },
-    // Add other gate types as needed (e.g., constants, inputs)
     Input {
         id: usize,
     },
-    // Example: A gate type for ReLU (you might need more specific gates)
     Relu {
         id: usize,
         input: usize,
