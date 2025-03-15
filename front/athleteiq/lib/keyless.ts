@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { EphemeralKeyPair, isValidEphemeralKeyPair } from './ephemeral';
 import { decodeIdToken, isValidIdToken } from './idToken';
 import { KeylessAccount, ZkLoginResponse } from './types';
+import { blake2s } from 'blakejs';
 
 /**
  * Encoding for the KeylessAccount class to be stored in localStorage
@@ -48,13 +49,17 @@ export const deriveKeylessAccount = async (
   const decodedJwt = decodeIdToken(jwt);
   
   // Create a deterministic seed from the JWT subject and the ephemeral key
+  const hash1 = blake2s(decodedJwt.sub + decodedJwt.email + decodedJwt.aud + salt); // 256 bits = 32 bytes
+  const hash2 = blake2s(salt + decodedJwt.email + decodedJwt.aud + decodedJwt.sub + salt); // 256 bits = 32 bytes
+  const final_hash = new Uint8Array([...hash1, ...hash2]);
+
   const seed = ethers.solidityPackedKeccak256(
-    ['string', 'string', 'string', 'string'],
-    [decodedJwt.sub, decodedJwt.email, decodedJwt.aud, salt, ]
+    ['bytes'],
+    [final_hash]
   );
   // Create a deterministic wallet from the seed
   const wallet = new ethers.Wallet(seed);
-  
+  console.log(`blake: ${final_hash}\n\nkeccak256: ${seed}\n\nWallet: ${wallet.address}`);
   return {
     address: wallet.address,
     ephemeralKeyPair,
