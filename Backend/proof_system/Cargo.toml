@@ -12,6 +12,8 @@ gkr_field_config = "0.1"  # Replace with the correct version
 transcript = "0.1"        # Replace with the correct version
 mpi_config = "0.1"        # Replace with the correct version
 rand = "0.8"              # Replace with the correct version
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 
 [lib]
 name = "proof_system"
