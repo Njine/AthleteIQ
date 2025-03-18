@@ -3,28 +3,66 @@ use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use poly_commit::orion::OrionSIMDFieldPCS;
 use gkr_field_config::M31; // Example - Replace with your GKR config
 use transcript::Sha256Transcript; // Example - Replace with your transcript
+use crate::gkr::circuit_builder::build_circuit_from_onnx; // Import the function
+use crate::gkr::prover::Prover; // Import the Prover
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 
 /// Generate a proof from an input file path
 #[pyfunction]
 fn generate_proof(input_path: String) -> PyResult<String> {
-    // Example - You'll need to initialize these correctly based on your setup
-    let params = 10; // Example - Replace with actual params
-    let mpi_config = mpi_config::MPIConfig::new(); // Example - Replace with actual config
-    let srs = poly_commit::orion::OrionSRS::from_random::<gkr_field_config::M31>(10, poly_commit::orion::ORION_CODE_PARAMETER_INSTANCE, rand::thread_rng()); // Example - Replace with actual SRS
-    let mut transcript = Sha256Transcript::new(b"init"); // Example - Replace with actual transcript
-    let mut scratch_pad = OrionSIMDFieldPCS::<M31, _, _, _>::ScratchPad::default(); // Example - Replace with actual scratchpad
+    // 1. Construct the circuit from the ONNX model.
+    let circuit = match build_circuit_from_onnx(&input_path) {
+        Ok(c) => c,
+        Err(e) => return Err(PyRuntimeError::new_err(format!("Failed to build circuit: {}", e))),
+    };
 
-    let pcs: OrionSIMDFieldPCS<M31, _, _, _> = OrionSIMDFieldPCS {
-        _field_config: std::marker::PhantomData,
-        _com_pack_f: std::marker::PhantomData,
-        _transcript: std::marker::PhantomData,
-    }; // Example - You might not need to instantiate it this way
+    // 2. Read input values from the input file.
+    let input_values = match read_input_values(&input_path) {
+        Ok(values) => values,
+        Err(e) => return Err(PyRuntimeError::new_err(format!("Failed to read input values: {}", e))),
+    };
 
-    // Example - Adapt this to call the correct methods on pcs
-    // let proof_result = pcs.generate(&input_path); // Example - Replace with actual call
+    // 3. Create a Prover instance.
+    let prover = Prover::new(circuit);
 
-    // For now, let's just return a placeholder
-    Ok("Placeholder Proof".to_string())
+    // 4. Generate the proof.
+    let proof = unsafe { prover.generate_proof(&input_values) }; // Assuming generate_proof is unsafe
+
+    // 5. Serialize the proof (for now, convert to a string).
+    let proof_string = format!("{:?}", proof); // Placeholder serialization.
+
+    // 6. Return the proof string.
+    Ok(proof_string)
+}
+
+/// Reads input values from a file and returns them as a HashMap.
+fn read_input_values(input_path: &str) -> Result<HashMap<usize, u64>, String> {
+    let file = File::open(input_path).map_err(|e| e.to_string())?;
+    let reader = BufReader::new(file);
+
+    let mut input_values = HashMap::new();
+    let mut gate_id = 0; // Assuming input gate IDs start from 0.
+    let mut input_count = 0; // Track the number of inputs read.
+
+    for line in reader.lines() {
+        let line = line.map_err(|e| e.to_string())?;
+        let value: f64 = line.parse().map_err(|e| e.to_string())?;
+
+        // Convert f64 to u64 (adjust based on your field representation).
+        let value_u64 = value.to_bits();
+
+        input_values.insert(gate_id, value_u64);
+        gate_id += 1;
+        input_count += 1;
+    }
+
+    if input_count != 11 {
+        return Err("Input file must contain 11 values.".to_string());
+    }
+
+    Ok(input_values)
 }
 
 /// Verify a proof from a given proof file path

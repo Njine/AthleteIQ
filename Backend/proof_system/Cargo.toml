@@ -8,6 +8,10 @@ gkr = { path = "../expander/gkr" }
 poly_commit = { path = "../expander/poly_commit" }
 polynomials = { path = "../expander/arith/polynomials" }
 pyo3 = { version = "0.19", features = ["extension-module"] }
+gkr_field_config = "0.1"  # Replace with the correct version
+transcript = "0.1"        # Replace with the correct version
+mpi_config = "0.1"        # Replace with the correct version
+rand = "0.8"              # Replace with the correct version
 
 [lib]
 name = "proof_system"
