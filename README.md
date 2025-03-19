@@ -17,6 +17,39 @@
 ![Screenshot 5](.res/s5.png)  
 ![Screenshot 6](.res/s6.png)  
 
+# Expander Zklogin Worflow
+- code in `Backend/zkp_login/src/main.rs`
+### Off chain Client aka Frontend [.ts]
+- get JWT from OCID
+- Decode JWT
+- Get Salt POST /api/auth/salt [JWT] 
+- Blake twice using [aud, sub, salt, email] => 128 bytes
+- Do Keccake256 => 64 bytes
+- Derive ETH using Keccake256 seed
+- POST /zkproof [aud, sub, salt, email, address] 
+
+### Off Chain Backend /zkproof [.ts] & [.rs]
+- Get Decoded JWT
+- Blake twice to get 128 bytes hash
+- input [Blake, address] to Exapander circuit
+- Do keccak256 inside circuit
+- use hint to derieve ETH address from keccak256 seed inside circuit
+- compare hint output with circuit expected output => (output == address)
+- generate witness, compile proof
+- return witness + proof
+- sign message contains date+ proof + ETH address
+- send to frontent
+
+### Off chain Client aka Frontend [.ts]
+- Query Sepolia Smart contract with signed message + address
+
+### On Chain [.sol]
+- decode message 
+- check is right signare?
+- check date > now
+- check (client address) == (proof address)
+- True? allow signin
+
 ## Features
 ### 1. Athlete Profile Management
 - Decentralized athlete profiles.
