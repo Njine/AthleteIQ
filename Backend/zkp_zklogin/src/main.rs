@@ -395,6 +395,19 @@ fn main() {
     ));
 
 
+    let proof_data = gkr::executor::dump_proof_and_claimed_v(&proof, &claimed_v).unwrap();
+
+    let mut blake_hasher = Blake2s256::new();
+    blake_hasher.update(&proof_data);
+    let blake_hash = blake_hasher.finalize();
+    println!("Blake2s256 hash of proof data: {}", hex::encode(&blake_hash));
+
+    use std::fs::File;
+    use std::io::Write;
+    let mut file = File::create("proof.txt").unwrap();
+    file.write_all(&proof_data).unwrap();
+    println!("Proof data written to proof.txt");
+
 
 }
 
