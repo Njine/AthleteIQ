@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import styles from "./callback.module.css"
 import { ethers } from "ethers"
 import { provider, NEXT_PUBLIC_CONTRACT_ADDRESS, NEXT_PUBLIC_GAS_WALLET } from "@/lib/constants"
+import confetti from "canvas-confetti"
 
 // Contract ABI - just the function we need
 const CONTRACT_ABI = [
@@ -18,9 +19,11 @@ export default function CallbackPage() {
   const [loadingStep, setLoadingStep] = useState(0)
   const [progress, setProgress] = useState(0)
   const [error, setError] = useState<string | null>(null)
+  const [txHash, setTxHash] = useState<string | null>(null)
+  const [redirectCountdown, setRedirectCountdown] = useState(3)
   const switchKeylessAccount = useKeylessAccounts((state) => state.switchKeylessAccount)
   const activeAccount = useKeylessAccounts((state) => state.activeAccount)
-  const  disconnectKeylessAccount  = useKeylessAccounts((state) => state.disconnectKeylessAccount)
+  const disconnectKeylessAccount = useKeylessAccounts((state) => state.disconnectKeylessAccount)
   const router = useRouter()
 
   // Loading steps with messages and durations
@@ -30,6 +33,13 @@ export default function CallbackPage() {
     { message: "Waiting for blockchain confirmation...", duration: 5000 },
     { message: "Verification successful!", duration: 2000 },
   ]
+
+  useEffect(() => {
+    // Update progress when loading step changes
+    if (loadingStep > 0) {
+      setProgress(Math.max(loadingStep * 25, progress))
+    }
+  }, [loadingStep])
 
   useEffect(() => {
     // This is a workaround to prevent firing twice due to strict mode
@@ -55,83 +65,99 @@ export default function CallbackPage() {
       try {
         // Step 1: Generate zkProof by switching account
         setLoadingStep(0)
-        await new Promise(resolve => setTimeout(resolve, loadingSteps[0].duration))
-        
+        await new Promise((resolve) => setTimeout(resolve, loadingSteps[0].duration))
+
         const account = await switchKeylessAccount(idToken)
-        console.log("Account data:", account) 
+        console.log("Account data:", account)
         if (!account || !account.proof_hash || !account.signature || !account.timestamp) {
           throw new Error("Failed to generate proof or signature")
         }
         
         // Step 2: Connect to blockchain
         setLoadingStep(1)
-        await new Promise(resolve => setTimeout(resolve, loadingSteps[1].duration))
-        
-        console.log("Send transaction to contract");
-        console.log("Loaded rpc");
+        await new Promise((resolve) => setTimeout(resolve, loadingSteps[1].duration))
+
+        console.log("Send transaction to contract")
+        console.log("Loaded rpc")
         await provider.getBlockNumber().catch((err) => {
           throw new Error(`RPC connection failed: ${err.message}`)
         })
         const signer = new ethers.Wallet(NEXT_PUBLIC_GAS_WALLET, provider)
         // const signer = await provider.getSigner(account.address)
-        console.log("Loaded signer");
+        console.log("Loaded signer")
         const contract = new ethers.Contract(NEXT_PUBLIC_CONTRACT_ADDRESS, CONTRACT_ABI, signer)
         
         // Step 3: Send verification to smart contract
         setLoadingStep(2)
         
         // Convert signature from hex string to bytes if needed
-        console.log("Sending.....");
-        const timestamp = String(account.timestamp); 
-        const signature = String(account.signature);
-        const prf = String(account.proof_hash);
-        const add = String(account.address);
-        
-        console.log("Timestamp:", timestamp, typeof timestamp);
-        console.log("Proof Hash:", prf, typeof prf);
-        console.log("Address:", add, typeof add);
-        console.log("Signature Bytes:", signature, typeof signature);
+        console.log("Sending.....")
+        const timestamp = String(account.timestamp)
+        const signature = String(account.signature)
+        const prf = String(account.proof_hash)
+        const add = String(account.address)
+
+        console.log("Timestamp:", timestamp, typeof timestamp)
+        console.log("Proof Hash:", prf, typeof prf)
+        console.log("Address:", add, typeof add)
+        console.log("Signature Bytes:", signature, typeof signature)
         // Call the smart contract to verify the signature
-        const tx = await contract.verifyLogin(
-          timestamp,
-          prf,
-          add,
-          signature
-        )
-        console.log("Sent.....");
+        const tx = await contract.verifyLogin(timestamp, prf, add, signature)
+        console.log("Sent.....")
+        setTxHash(tx.hash)
+
+        // Display transaction hash
+        console.log("Transaction hash:", tx.hash)
+        const txHash = tx.hash
 
         // Wait for the transaction to be mined
         const receipt = await tx.wait()
-        console.log('recipt:  ',receipt)
-        
+        console.log("recipt:  ", receipt)
+
         // Check if verification was successful by looking for the event
-        const verified = receipt.logs.some(log => {
+        const verified = receipt.logs.some((log) => {
           try {
-            console.log("log: ",log.data);
-            const decoded = ethers.AbiCoder.defaultAbiCoder().decode(["bool", "uint256"], log.data);
+            console.log("log: ", log.data)
+            const decoded = ethers.AbiCoder.defaultAbiCoder().decode(["bool", "uint256"], log.data)
             console.log(decoded)
-            return decoded[0];
+            return decoded[0]
           } catch (e) {
-            return false;
+            return false
           }
-        });
-        
+        })
+
         if (!verified) {
-          disconnectKeylessAccount();
+          disconnectKeylessAccount()
           router.push("/login")
           throw new Error("Blockchain verification failed")
         }
         
         // Step 4: Complete the process
-        await new Promise(resolve => setTimeout(resolve, loadingSteps[2].duration - 2000)) // Adjust for tx wait time
+        await new Promise((resolve) => setTimeout(resolve, loadingSteps[2].duration - 2000)) // Adjust for tx wait time
         setLoadingStep(3)
-        await new Promise(resolve => setTimeout(resolve, loadingSteps[3].duration))
-        
-        // Redirect to home page
-        router.push("/home")
-        
+
+        // Trigger confetti on success
+        if (typeof window !== "undefined") {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+          })
+        }
+
+        // Start countdown before redirect
+        let countdown = 3
+        setRedirectCountdown(countdown)
+        const countdownInterval = setInterval(() => {
+          countdown -= 1
+          setRedirectCountdown(countdown)
+          if (countdown <= 0) {
+            clearInterval(countdownInterval)
+            router.push("/home")
+          }
+        }, 1000)
       } catch (error) {
-        disconnectKeylessAccount();
+        disconnectKeylessAccount()
         console.error("Authentication error:", error)
         setError(`Authentication failed: ${error instanceof Error ? error.message : String(error)}`)
         // Optionally redirect to login after a delay
@@ -139,19 +165,31 @@ export default function CallbackPage() {
       }
     }
 
-    // Progress bar animation
-    const totalTime = loadingSteps.reduce((acc, step) => acc + step.duration, 0)
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100 || error) {
-          clearInterval(progressInterval)
-          return prev >= 100 ? 100 : prev
-        }
-        return Math.min(Math.floor((Date.now() - startTime) / totalTime * 100), 99)
-      })
-    }, 100)
-
+    // Simpler progress bar animation that works reliably
     const startTime = Date.now()
+    const totalDuration = loadingSteps.reduce((acc, step) => acc + step.duration, 0)
+
+    const progressInterval = setInterval(() => {
+      const elapsedTime = Date.now() - startTime
+      const calculatedProgress = Math.min(Math.floor((elapsedTime / totalDuration) * 100), 99)
+
+      // Force progress to match loading step if it's behind
+      const minimumProgress = loadingStep * 25
+      const newProgress = Math.max(calculatedProgress, minimumProgress)
+
+      // Set to 100% when we reach the final step
+      if (loadingStep === loadingSteps.length - 1) {
+        setProgress(100)
+      } else if (!error) {
+        setProgress(newProgress)
+      }
+
+      // Clear interval when done
+      if (newProgress >= 100 || error) {
+        clearInterval(progressInterval)
+      }
+    }, 50)
+
     handleLogin()
 
     return () => {
@@ -218,27 +256,49 @@ export default function CallbackPage() {
                   transition={{ duration: 0.3, delay: 1 }}
                 >
                   <pre className={styles.codeBlock}>
-{`Address: ${activeAccount.address?.substring(0, 10)}...
+                    {`Address: ${activeAccount.address?.substring(0, 10)}...
 ProofHash: ${activeAccount.proof_hash?.substring(0, 15)}...
 Timestamp: ${activeAccount.timestamp}`}
                   </pre>
                 </motion.div>
               )}
+
+              {txHash && (
+                <motion.div
+                  className={`${styles.consoleLine} ${styles.consoleDetails}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.5 }}
+                >
+                  <div className={styles.txHashContainer}>
+                    <span className={styles.txHashLabel}>TX Hash: </span>
+                    <span className={styles.txHashValue}>{`${txHash.substring(0, 18)}...`}</span>
+                    <button
+                      className={styles.txHashButton}
+                      onClick={() => window.open(`https://sepolia.etherscan.io/tx/${txHash}`, "_blank")}
+                    >
+                      View
+                    </button>
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             <div className={styles.progressContainer}>
-              <div 
-                className={`${styles.progressBar} ${error ? styles.progressError : ''}`} 
+              <div
+                className={`${styles.progressBar} ${error ? styles.progressError : ""} ${loadingStep === 2 ? styles.progressPulse : ""}`}
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
 
             <div className={styles.statusText}>
-              {error 
-                ? "Authentication failed. Redirecting..." 
-                : loadingStep < loadingSteps.length - 1 
-                  ? `Verifying... ${progress}%` 
-                  : "Loading Blockchain Data..."}
+              {error
+                ? "Authentication failed. Redirecting..."
+                : loadingStep < loadingSteps.length - 1
+                  ? `Verifying... ${progress}%`
+                  : loadingStep === loadingSteps.length - 1
+                    ? `Success! Redirecting in ${redirectCountdown}...`
+                    : "Loading Blockchain Data..."}
             </div>
           </div>
         </div>
