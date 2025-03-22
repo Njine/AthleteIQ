@@ -16,6 +16,7 @@
 ![Screenshot 4](.res/s4.png)  
 ![Screenshot 5](.res/s5.png)  
 ![Screenshot 6](.res/s6.png)  
+![Screenshot 7](.res/s7.png)  
 
 # Expander Zklogin Worflow
 - code in `Backend/zkp_login/src/main.rs`

@@ -9,50 +9,35 @@ contract ZkLoginAuth {
     // Private trusted verifier address
     address private immutable trustedVerifier = 0x00AC976b0756EC2dd9935f55e0294C24FCa8DF46;
     uint256 public constant TIME_WINDOW = 20 minutes;
-    
-    event LoginAttempt(address indexed user, bool success, uint256 timestamp, address  recoveredSigner, address trustedVerifier,  bytes32 messageHash, bytes32 prefixedHash, string message);
-    event LoginSuccess(address indexed user, string message);
-    
+    event LoginAttempt(string indexed user, bool success, address  recoveredSigner, address trustedVerifier, bytes32 messageHash, string message);
+    event LoginSuccess(string indexed user, string message);
+
     /**
      * @dev Verify user authentication with pre-formatted message components
-     * @param timestamp Timestamp of the authentication attempt
+     * @param timestamps Timestamp of the authentication attempt
      * @param proofHash Hash of the proof
      * @param userAddress Address of the user attempting to log in
      * @param signature Signature produced by the trusted verifier
      * @return True if authentication is successful
      */
     function verifyLogin(
-        uint256 timestamp,
+        string calldata timestamps,
         string calldata proofHash,
-        address userAddress,
+        string calldata userAddress,
         bytes calldata signature
     ) external returns (string memory) {
+        uint256 timestamp = stringToUint(timestamps); // Convert string to uint256
         // Check if timestamp is valid (not expired)
-        require(block.timestamp - timestamp <= TIME_WINDOW, "Timestamp expired");
-        
-        // Recreate message from inputs (assuming proper formatting)
-        // string memory message = string(
-        //     abi.encodePacked(
-        //         timestamp,
-        //         ":",
-        //         proofHash,
-        //         ":",
-        //         userAddress
-        //     )
-        // );
-
-
+        require(
+            (block.timestamp > timestamp ? block.timestamp - timestamp : timestamp - block.timestamp) <= TIME_WINDOW,
+            "Timestamp outside valid window"
+        );
 
         // Concatenate values like Rust's format!("{}:{}:{}", ...)
-        string memory messagee = string(abi.encodePacked(
-            uintToString(timestamp), ":", 
-            proofHash, ":", 
-            toAsciiString(userAddress)
-        ));
-        
+        string memory messagee = string(abi.encodePacked(timestamps, ":", proofHash, ":", userAddress));
+
         // Hash the message using keccak256
         bytes32 messageHash = keccak256(bytes(messagee));
-        
         // Prefix the hash (mimics ethers.hashMessage)
         bytes32 prefixedHash = keccak256(
             abi.encodePacked("\x19Ethereum Signed Message:\n32", messageHash)
@@ -60,14 +45,9 @@ contract ZkLoginAuth {
         
         // Recover signer from signature
         address recoveredSigner = recoverSigner(prefixedHash, signature);
-        
-        // Check conditions: valid signer and user address matches sender
-        bool isValidSigner = (recoveredSigner == trustedVerifier);
-        // bool isValidUser = (msg.sender == userAddress);
-        bool success = isValidSigner;
-        
-        emit LoginAttempt(userAddress, success, timestamp, recoveredSigner, trustedVerifier, messageHash, prefixedHash, messagee);
-        
+        bool success = (recoveredSigner == trustedVerifier);
+        emit LoginAttempt(userAddress, success, recoveredSigner, trustedVerifier, messageHash, messagee);
+
         if (success) {
             // Emit an event that includes both the address and a success message
             emit LoginSuccess(userAddress, "success");
@@ -107,34 +87,13 @@ contract ZkLoginAuth {
         return ecrecover(_hash, v, r, s);
     }
 
-    function toAsciiString(address _addr) internal pure returns (string memory) {
-        bytes memory addrBytes = abi.encodePacked(_addr);
-        bytes memory hexChars = "0123456789abcdef";
-        bytes memory str = new bytes(42);
-        str[0] = "0";
-        str[1] = "x";
-        for (uint256 i = 0; i < 20; i++) {
-            str[2 + i * 2] = hexChars[uint8(addrBytes[i] >> 4)];
-            str[3 + i * 2] = hexChars[uint8(addrBytes[i] & 0x0f)];
+    function stringToUint(string memory s) internal pure returns (uint256) {
+        bytes memory b = bytes(s);
+        uint256 result = 0;
+        for (uint256 i = 0; i < b.length; i++) {
+            require(b[i] >= 0x30 && b[i] <= 0x39, "Invalid character"); // Ensure only digits
+            result = result * 10 + (uint256(uint8(b[i])) - 48);
         }
-        return string(str);
-    }
-
-    // Convert uint256 to string
-    function uintToString(uint256 value) internal pure returns (string memory) {
-        if (value == 0) return "0";
-        uint256 temp = value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + value % 10));
-            value /= 10;
-        }
-        return string(buffer);
+        return result;
     }
 }

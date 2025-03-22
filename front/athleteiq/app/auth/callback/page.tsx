@@ -11,7 +11,7 @@ import confetti from "canvas-confetti"
 
 // Contract ABI - just the function we need
 const CONTRACT_ABI = [
-  "function verifyLogin(uint256 timestamp, string calldata proofHash, address userAddress, bytes calldata signature) public returns (bool)"
+  "function verifyLogin(string timestamp, string calldata proofHash, string calldata userAddress, bytes calldata signature) public returns (string)"
 ]
 
 export default function CallbackPage() {
@@ -158,7 +158,7 @@ export default function CallbackPage() {
         const timestamp = String(account.timestamp)
         const signature = String(account.signature)
         const prf = String(account.proof_hash)
-        const add = String(account.address)
+        const add = String(account.address.toLowerCase())
 
         console.log("Timestamp:", timestamp, typeof timestamp)
         console.log("Proof Hash:", prf, typeof prf)
