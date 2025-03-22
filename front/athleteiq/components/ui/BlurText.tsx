@@ -101,6 +101,7 @@ const BlurText = memo(
               return (
                 <animated.span
                   key={`${lineIndex}-${elementIndex}`}
+                  className="gradient-text"
                   style={{
                     ...(springs[springIndex] as Record<string, SpringValue<any>>),
                     display: "inline-block",
