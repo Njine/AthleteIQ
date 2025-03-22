@@ -3,6 +3,8 @@ import { ethers } from 'ethers';
 import { EphemeralKeyPair, isValidEphemeralKeyPair } from './ephemeral';
 import { decodeIdToken, isValidIdToken } from './idToken';
 import { KeylessAccount, ZkLoginResponse } from './types';
+import { blake2s } from 'blakejs';
+import { NEXT_PUBLIC_ZK_PROVER_URL } from "./constants";
 
 /**
  * Encoding for the KeylessAccount class to be stored in localStorage
@@ -48,19 +50,29 @@ export const deriveKeylessAccount = async (
   const decodedJwt = decodeIdToken(jwt);
   
   // Create a deterministic seed from the JWT subject and the ephemeral key
+  const hash1 = blake2s(decodedJwt.sub + decodedJwt.email + decodedJwt.aud + salt); // 256 bits = 32 bytes
+  const hash2 = blake2s(salt + decodedJwt.email + decodedJwt.aud + decodedJwt.sub + salt); // 256 bits = 32 bytes
+  const final_hash = new Uint8Array([...hash1, ...hash2]);
+
   const seed = ethers.solidityPackedKeccak256(
-    ['string', 'string', 'string', 'string'],
-    [decodedJwt.sub, decodedJwt.email, decodedJwt.aud, salt, ]
+    ['bytes'],
+    [final_hash]
   );
   // Create a deterministic wallet from the seed
   const wallet = new ethers.Wallet(seed);
-  
+  console.log(`blake: ${final_hash}\n\nkeccak256: ${seed}\n\nWallet: ${wallet.address}`);
+
+  const prf = await getZkProof(jwt, salt);
+
   return {
     address: wallet.address,
     ephemeralKeyPair,
     salt,
     jwt,
     decodedJwt,
+    proof_hash: prf.proof_hash,
+    signature: prf.signature,
+    timestamp: prf.timestamp,
   };
 };
 
@@ -84,42 +96,44 @@ export const validateKeylessAccount = (
 /**
  * Get a ZK proof from the proving service
  */
-// export async function getZkProof(
-//   jwt: string, 
-//   salt: string, 
-//   ephemeralPublicKey: string,
-//   maxEpoch: number,
-//   randomness: string
-// ): Promise<ZkLoginResponse> {
-//   try {
-//     const payload = JSON.stringify({
-//       jwt,
-//       salt,
-//       maxEpoch,
-//       ephemeralPublicKey,
-//       randomness,
-//     });
+async function getZkProof(
+  jwt: string, 
+  salt: string,
+): Promise<ZkLoginResponse> {
+  const decodedJwt = decodeIdToken(jwt);
+
+  try {
+    const payload = JSON.stringify({
+      sub: decodedJwt.sub,
+      email: decodedJwt.email,
+      aud: decodedJwt.aud,
+      salt,
+    });
     
-//     const response = await fetch(ZK_PROVER_URL, {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: payload,
-//     });
+    const response = await fetch(NEXT_PUBLIC_ZK_PROVER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload,
+    });
     
-//     if (!response.ok) {
-//       throw new Error(`ZK prover returned ${response.status}`);
-//     }
+    if (!response.ok) {
+      throw new Error(`ZK prover returned ${response.status}`);
+    }
     
-//     const data = await response.json();
-//     return {
-//       success: true,
-//       proof: data,
-//     };
-//   } catch (error) {
-//     console.error("Failed to get ZK proof:", error);
-//     return {
-//       success: false,
-//       message: `Failed to get ZK proof: ${error}`,
-//     };
-//   }
-// }
+    const data = await response.json();
+    return {
+      success: data.success,
+      proof_hash: data.proof_hash,
+      message: data.message,
+      signature: data.signature,
+      timestamp: data.timestamp,
+      ethereum_address: data.ethereum_address
+    };
+  } catch (error) {
+    console.error("Failed to get ZK proof:", error);
+    return {
+      success: false,
+      message: `Failed to get ZK proof: ${error}`,
+    };
+  }
+}

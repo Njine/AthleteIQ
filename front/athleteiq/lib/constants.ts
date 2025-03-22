@@ -5,8 +5,8 @@ export const LocalStorageKeys = {
 };
 
 // Sepolia provider
-export const sepoliaProvider = new ethers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/YOUR_INFURA_ID"
+export const provider = new ethers.JsonRpcProvider(
+  process.env.NEXT_PUBLIC_RPC_URL || "https://eth-sepolia.g.alchemy.com/v2/oKxs-03sij-U_N0iOlrSsZFr29-IqbuF"
 );
 
 export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
@@ -16,3 +16,7 @@ export const REDIRECT_URI = (process.env.NEXT_PUBLIC_URLL || "http://localhost:3
 export const JWT_SECRET = process.env.JWT_SECRET || "superstrongkey"
 
 export const KEY_EXPIRY = 86400;
+
+export const NEXT_PUBLIC_ZK_PROVER_URL = process.env.ZK_PROVER_URL || "http://127.0.0.1:8080/api/zklogin";
+export const NEXT_PUBLIC_CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || "0x00EA3c8270868B9cF9C24a5E78cACDa9DfE8B485" 
+export const NEXT_PUBLIC_GAS_WALLET = process.env.GAS_WALLET || "0x000"

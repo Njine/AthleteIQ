@@ -1,0 +1,177 @@
+{
+  "address": "0x00EA3c8270868B9cF9C24a5E78cACDa9DfE8B485",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "success",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "recoveredSigner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "trustedVerifier",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "messageHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "prefixedHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "name": "LoginAttempt",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "name": "LoginSuccess",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "TIME_WINDOW",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "proofHash",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "userAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        }
+      ],
+      "name": "verifyLogin",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x21d430312f58d8271da02d92ee9a08d6476f04d0a9ce162c7efa10b727aa4372",
+  "receipt": {
+    "to": null,
+    "from": "0xC27d4CcC62E64791c5B321C38E2aF647F091ddf5",
+    "contractAddress": "0x00EA3c8270868B9cF9C24a5E78cACDa9DfE8B485",
+    "transactionIndex": 152,
+    "gasUsed": "601725",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x3d69334279aa08fcb59d05cfdc1b71e641e3c33aef28967fc48c3b1a9296b232",
+    "transactionHash": "0x21d430312f58d8271da02d92ee9a08d6476f04d0a9ce162c7efa10b727aa4372",
+    "logs": [],
+    "blockNumber": 7953004,
+    "cumulativeGasUsed": "15261363",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 11,
+  "solcInputHash": "579176fe872e23c90858363a7210c769",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"success\",\"type\":\"bool\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recoveredSigner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"trustedVerifier\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"messageHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"prefixedHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"message\",\"type\":\"string\"}],\"name\":\"LoginAttempt\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"message\",\"type\":\"string\"}],\"name\":\"LoginSuccess\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"TIME_WINDOW\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"proofHash\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"userAddress\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"verifyLogin\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Simplified contract for verifying user authentication via signatures\",\"kind\":\"dev\",\"methods\":{\"verifyLogin(uint256,string,address,bytes)\":{\"details\":\"Verify user authentication with pre-formatted message components\",\"params\":{\"proofHash\":\"Hash of the proof\",\"signature\":\"Signature produced by the trusted verifier\",\"timestamp\":\"Timestamp of the authentication attempt\",\"userAddress\":\"Address of the user attempting to log in\"},\"returns\":{\"_0\":\"True if authentication is successful\"}}},\"title\":\"ZkLoginAuth\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/YourContract.sol\":\"ZkLoginAuth\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/YourContract.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.17;\\n\\n/**\\n * @title ZkLoginAuth\\n * @dev Simplified contract for verifying user authentication via signatures\\n */\\ncontract ZkLoginAuth {\\n    // Private trusted verifier address\\n    address private immutable trustedVerifier = 0x00AC976b0756EC2dd9935f55e0294C24FCa8DF46;\\n    uint256 public constant TIME_WINDOW = 20 minutes;\\n    \\n    event LoginAttempt(address indexed user, bool success, uint256 timestamp, address  recoveredSigner, address trustedVerifier,  bytes32 messageHash, bytes32 prefixedHash, string message);\\n    event LoginSuccess(address indexed user, string message);\\n    \\n    /**\\n     * @dev Verify user authentication with pre-formatted message components\\n     * @param timestamp Timestamp of the authentication attempt\\n     * @param proofHash Hash of the proof\\n     * @param userAddress Address of the user attempting to log in\\n     * @param signature Signature produced by the trusted verifier\\n     * @return True if authentication is successful\\n     */\\n    function verifyLogin(\\n        uint256 timestamp,\\n        string calldata proofHash,\\n        address userAddress,\\n        bytes calldata signature\\n    ) external returns (string memory) {\\n        // Check if timestamp is valid (not expired)\\n        require(block.timestamp - timestamp <= TIME_WINDOW, \\\"Timestamp expired\\\");\\n        \\n        // Recreate message from inputs (assuming proper formatting)\\n        // string memory message = string(\\n        //     abi.encodePacked(\\n        //         timestamp,\\n        //         \\\":\\\",\\n        //         proofHash,\\n        //         \\\":\\\",\\n        //         userAddress\\n        //     )\\n        // );\\n\\n\\n\\n        // Concatenate values like Rust's format!(\\\"{}:{}:{}\\\", ...)\\n        string memory messagee = string(abi.encodePacked(\\n            uintToString(timestamp), \\\":\\\", \\n            proofHash, \\\":\\\", \\n            toAsciiString(userAddress)\\n        ));\\n        \\n        // Hash the message using keccak256\\n        bytes32 messageHash = keccak256(bytes(messagee));\\n        \\n        // Prefix the hash (mimics ethers.hashMessage)\\n        bytes32 prefixedHash = keccak256(\\n            abi.encodePacked(\\\"\\\\x19Ethereum Signed Message:\\\\n32\\\", messageHash)\\n        );\\n        \\n        // Recover signer from signature\\n        address recoveredSigner = recoverSigner(prefixedHash, signature);\\n        \\n        // Check conditions: valid signer and user address matches sender\\n        bool isValidSigner = (recoveredSigner == trustedVerifier);\\n        // bool isValidUser = (msg.sender == userAddress);\\n        bool success = isValidSigner;\\n        \\n        emit LoginAttempt(userAddress, success, timestamp, recoveredSigner, trustedVerifier, messageHash, prefixedHash, messagee);\\n        \\n        if (success) {\\n            // Emit an event that includes both the address and a success message\\n            emit LoginSuccess(userAddress, \\\"success\\\");\\n            return \\\"success\\\";\\n        } else {\\n            return \\\"failure\\\";\\n        }\\n    }\\n    \\n    /**\\n     * @dev Recover signer address from signature\\n     * @param _hash Hashed message\\n     * @param _signature Signature bytes\\n     * @return Recovered address\\n     */\\n    function recoverSigner(bytes32 _hash, bytes calldata _signature) internal pure returns (address) {\\n        require(_signature.length == 65, \\\"Invalid signature length\\\");\\n        \\n        bytes32 r;\\n        bytes32 s;\\n        uint8 v;\\n        \\n        assembly {\\n            // Extract r, s, v from the signature\\n            // IMPORTANT: We need to add 32 to the pointer to skip the length field of the bytes array\\n            r := calldataload(_signature.offset)\\n            s := calldataload(add(_signature.offset, 32))\\n            // For v, we load 32 bytes and then extract the first byte\\n            v := byte(0, calldataload(add(_signature.offset, 64)))\\n        }\\n        \\n        // Version of signature should be 27 or 28, but some wallets use 0 or 1\\n        if (v < 27) {\\n            v += 27;\\n        }\\n        \\n        return ecrecover(_hash, v, r, s);\\n    }\\n\\n    function toAsciiString(address _addr) internal pure returns (string memory) {\\n        bytes memory addrBytes = abi.encodePacked(_addr);\\n        bytes memory hexChars = \\\"0123456789abcdef\\\";\\n        bytes memory str = new bytes(42);\\n        str[0] = \\\"0\\\";\\n        str[1] = \\\"x\\\";\\n        for (uint256 i = 0; i < 20; i++) {\\n            str[2 + i * 2] = hexChars[uint8(addrBytes[i] >> 4)];\\n            str[3 + i * 2] = hexChars[uint8(addrBytes[i] & 0x0f)];\\n        }\\n        return string(str);\\n    }\\n\\n    // Convert uint256 to string\\n    function uintToString(uint256 value) internal pure returns (string memory) {\\n        if (value == 0) return \\\"0\\\";\\n        uint256 temp = value;\\n        uint256 digits;\\n        while (temp != 0) {\\n            digits++;\\n            temp /= 10;\\n        }\\n        bytes memory buffer = new bytes(digits);\\n        while (value != 0) {\\n            digits -= 1;\\n            buffer[digits] = bytes1(uint8(48 + value % 10));\\n            value /= 10;\\n        }\\n        return string(buffer);\\n    }\\n}\",\"keccak256\":\"0x69a1a5aca4fdf2e81c18be764e80d31cae22ea1a53a74b335fa0d91125f27411\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60a060405272ac976b0756ec2dd9935f55e0294c24fca8df4660805234801561002757600080fd5b506080516109ec61004a6000396000818161017d01526101e701526109ec6000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80632e60d9311461003b578063d473ae0514610057575b600080fd5b6100446104b081565b6040519081526020015b60405180910390f35b61006a61006536600461071c565b610077565b60405161004e9190610806565b60606104b06100868842610836565b11156100cd5760405162461bcd60e51b8152602060048201526011602482015270151a5b595cdd185b5c08195e1c1a5c9959607a1b60448201526064015b60405180910390fd5b60006100d8886102e5565b87876100e3886103ee565b6040516020016100f6949392919061084f565b604051602081830303815290604052905060008180519060200120905060008160405160200161015291907f19457468657265756d205369676e6564204d6573736167653a0a3332000000008152601c810191909152603c0190565b60405160208183030381529060405280519060200120905060006101778288886105f2565b905060007f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316826001600160a01b03161490506000819050896001600160a01b03167f1666371a3ae4fd132251ee49d590923a6655ecac518177309250d0e7d192edd7828f867f00000000000000000000000000000000000000000000000000000000000000008a8a8d60405161021c979695949392919061089e565b60405180910390a280156102b257896001600160a01b03167f0dea9dc45be076f4ffcbfd944b693f74ae07ec5b34dff0965fec2523723cfb9460405161027d906020808252600790820152667375636365737360c81b604082015260600190565b60405180910390a2604051806040016040528060078152602001667375636365737360c81b81525096505050505050506102db565b604051806040016040528060078152602001666661696c75726560c81b81525096505050505050505b9695505050505050565b60608160000361030c5750506040805180820190915260018152600360fc1b602082015290565b8160005b81156103365780610320816108f0565b915061032f9050600a8361091f565b9150610310565b60008167ffffffffffffffff81111561035157610351610933565b6040519080825280601f01601f19166020018201604052801561037b576020820181803683370190505b5090505b84156103e657610390600183610836565b915061039d600a86610949565b6103a890603061095d565b60f81b8183815181106103bd576103bd610970565b60200101906001600160f81b031916908160001a9053506103df600a8661091f565b945061037f565b949350505050565b604051606082811b6bffffffffffffffffffffffff191660208301529060009060340160408051808303601f190181528282018252601083526f181899199a1a9b1b9c1cb0b131b232b360811b60208401528151602a80825260608201909352909350600091602082018180368337019050509050600360fc1b8160008151811061047b5761047b610970565b60200101906001600160f81b031916908160001a905350600f60fb1b816001815181106104aa576104aa610970565b60200101906001600160f81b031916908160001a90535060005b60148110156105e9578260048583815181106104e2576104e2610970565b016020015182516001600160f81b031990911690911c60f81c90811061050a5761050a610970565b01602001516001600160f81b03191682610525836002610986565b61053090600261095d565b8151811061054057610540610970565b60200101906001600160f81b031916908160001a9053508284828151811061056a5761056a610970565b602091010151815160f89190911c600f1690811061058a5761058a610970565b01602001516001600160f81b031916826105a5836002610986565b6105b090600361095d565b815181106105c0576105c0610970565b60200101906001600160f81b031916908160001a905350806105e1816108f0565b9150506104c4565b50949350505050565b6000604182146106445760405162461bcd60e51b815260206004820152601860248201527f496e76616c6964207369676e6174757265206c656e677468000000000000000060448201526064016100c4565b82356020840135604085013560001a601b81101561066a57610667601b8261099d565b90505b60408051600081526020810180835289905260ff831691810191909152606081018490526080810183905260019060a0016020604051602081039080840390855afa1580156106bd573d6000803e3d6000fd5b5050604051601f19015198975050505050505050565b60008083601f8401126106e557600080fd5b50813567ffffffffffffffff8111156106fd57600080fd5b60208301915083602082850101111561071557600080fd5b9250929050565b6000806000806000806080878903121561073557600080fd5b86359550602087013567ffffffffffffffff8082111561075457600080fd5b6107608a838b016106d3565b9097509550604089013591506001600160a01b038216821461078157600080fd5b9093506060880135908082111561079757600080fd5b506107a489828a016106d3565b979a9699509497509295939492505050565b60005b838110156107d15781810151838201526020016107b9565b50506000910152565b600081518084526107f28160208601602086016107b6565b601f01601f19169290920160200192915050565b60208152600061081960208301846107da565b9392505050565b634e487b7160e01b600052601160045260246000fd5b8181038181111561084957610849610820565b92915050565b60008551610861818460208a016107b6565b601d60f91b908301818152908587600184013760019186019182015283516108908160028401602088016107b6565b016002019695505050505050565b8715158152866020820152600060018060a01b0380881660408401528087166060840152508460808301528360a083015260e060c08301526108e360e08301846107da565b9998505050505050505050565b60006001820161090257610902610820565b5060010190565b634e487b7160e01b600052601260045260246000fd5b60008261092e5761092e610909565b500490565b634e487b7160e01b600052604160045260246000fd5b60008261095857610958610909565b500690565b8082018082111561084957610849610820565b634e487b7160e01b600052603260045260246000fd5b808202811582820484141761084957610849610820565b60ff81811683821601908111156108495761084961082056fea264697066735822122000d6c1782464e06dd16155f5d0128be49bfa62b65af14c60e0a5b17a6dd07a5264736f6c63430008140033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100365760003560e01c80632e60d9311461003b578063d473ae0514610057575b600080fd5b6100446104b081565b6040519081526020015b60405180910390f35b61006a61006536600461071c565b610077565b60405161004e9190610806565b60606104b06100868842610836565b11156100cd5760405162461bcd60e51b8152602060048201526011602482015270151a5b595cdd185b5c08195e1c1a5c9959607a1b60448201526064015b60405180910390fd5b60006100d8886102e5565b87876100e3886103ee565b6040516020016100f6949392919061084f565b604051602081830303815290604052905060008180519060200120905060008160405160200161015291907f19457468657265756d205369676e6564204d6573736167653a0a3332000000008152601c810191909152603c0190565b60405160208183030381529060405280519060200120905060006101778288886105f2565b905060007f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316826001600160a01b03161490506000819050896001600160a01b03167f1666371a3ae4fd132251ee49d590923a6655ecac518177309250d0e7d192edd7828f867f00000000000000000000000000000000000000000000000000000000000000008a8a8d60405161021c979695949392919061089e565b60405180910390a280156102b257896001600160a01b03167f0dea9dc45be076f4ffcbfd944b693f74ae07ec5b34dff0965fec2523723cfb9460405161027d906020808252600790820152667375636365737360c81b604082015260600190565b60405180910390a2604051806040016040528060078152602001667375636365737360c81b81525096505050505050506102db565b604051806040016040528060078152602001666661696c75726560c81b81525096505050505050505b9695505050505050565b60608160000361030c5750506040805180820190915260018152600360fc1b602082015290565b8160005b81156103365780610320816108f0565b915061032f9050600a8361091f565b9150610310565b60008167ffffffffffffffff81111561035157610351610933565b6040519080825280601f01601f19166020018201604052801561037b576020820181803683370190505b5090505b84156103e657610390600183610836565b915061039d600a86610949565b6103a890603061095d565b60f81b8183815181106103bd576103bd610970565b60200101906001600160f81b031916908160001a9053506103df600a8661091f565b945061037f565b949350505050565b604051606082811b6bffffffffffffffffffffffff191660208301529060009060340160408051808303601f190181528282018252601083526f181899199a1a9b1b9c1cb0b131b232b360811b60208401528151602a80825260608201909352909350600091602082018180368337019050509050600360fc1b8160008151811061047b5761047b610970565b60200101906001600160f81b031916908160001a905350600f60fb1b816001815181106104aa576104aa610970565b60200101906001600160f81b031916908160001a90535060005b60148110156105e9578260048583815181106104e2576104e2610970565b016020015182516001600160f81b031990911690911c60f81c90811061050a5761050a610970565b01602001516001600160f81b03191682610525836002610986565b61053090600261095d565b8151811061054057610540610970565b60200101906001600160f81b031916908160001a9053508284828151811061056a5761056a610970565b602091010151815160f89190911c600f1690811061058a5761058a610970565b01602001516001600160f81b031916826105a5836002610986565b6105b090600361095d565b815181106105c0576105c0610970565b60200101906001600160f81b031916908160001a905350806105e1816108f0565b9150506104c4565b50949350505050565b6000604182146106445760405162461bcd60e51b815260206004820152601860248201527f496e76616c6964207369676e6174757265206c656e677468000000000000000060448201526064016100c4565b82356020840135604085013560001a601b81101561066a57610667601b8261099d565b90505b60408051600081526020810180835289905260ff831691810191909152606081018490526080810183905260019060a0016020604051602081039080840390855afa1580156106bd573d6000803e3d6000fd5b5050604051601f19015198975050505050505050565b60008083601f8401126106e557600080fd5b50813567ffffffffffffffff8111156106fd57600080fd5b60208301915083602082850101111561071557600080fd5b9250929050565b6000806000806000806080878903121561073557600080fd5b86359550602087013567ffffffffffffffff8082111561075457600080fd5b6107608a838b016106d3565b9097509550604089013591506001600160a01b038216821461078157600080fd5b9093506060880135908082111561079757600080fd5b506107a489828a016106d3565b979a9699509497509295939492505050565b60005b838110156107d15781810151838201526020016107b9565b50506000910152565b600081518084526107f28160208601602086016107b6565b601f01601f19169290920160200192915050565b60208152600061081960208301846107da565b9392505050565b634e487b7160e01b600052601160045260246000fd5b8181038181111561084957610849610820565b92915050565b60008551610861818460208a016107b6565b601d60f91b908301818152908587600184013760019186019182015283516108908160028401602088016107b6565b016002019695505050505050565b8715158152866020820152600060018060a01b0380881660408401528087166060840152508460808301528360a083015260e060c08301526108e360e08301846107da565b9998505050505050505050565b60006001820161090257610902610820565b5060010190565b634e487b7160e01b600052601260045260246000fd5b60008261092e5761092e610909565b500490565b634e487b7160e01b600052604160045260246000fd5b60008261095857610958610909565b500690565b8082018082111561084957610849610820565b634e487b7160e01b600052603260045260246000fd5b808202811582820484141761084957610849610820565b60ff81811683821601908111156108495761084961082056fea264697066735822122000d6c1782464e06dd16155f5d0128be49bfa62b65af14c60e0a5b17a6dd07a5264736f6c63430008140033",
+  "devdoc": {
+    "details": "Simplified contract for verifying user authentication via signatures",
+    "kind": "dev",
+    "methods": {
+      "verifyLogin(uint256,string,address,bytes)": {
+        "details": "Verify user authentication with pre-formatted message components",
+        "params": {
+          "proofHash": "Hash of the proof",
+          "signature": "Signature produced by the trusted verifier",
+          "timestamp": "Timestamp of the authentication attempt",
+          "userAddress": "Address of the user attempting to log in"
+        },
+        "returns": {
+          "_0": "True if authentication is successful"
+        }
+      }
+    },
+    "title": "ZkLoginAuth",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}

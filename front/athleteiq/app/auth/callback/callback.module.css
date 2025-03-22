@@ -239,3 +239,40 @@
       transform: translateY(100%);
     }
   }
+
+
+
+  /* Add these styles to your existing callback.module.css */
+
+.consoleError {
+  color: #ff5555;
+}
+
+.consoleDetails {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.consoleFailure {
+  color: #ff5555;
+  margin-left: 8px;
+  font-weight: bold;
+}
+
+.progressError {
+  background-color: #ff5555 !important;
+}
+
+.codeBlock {
+  background: rgba(30, 30, 30, 0.5);
+  border-radius: 4px;
+  padding: 8px;
+  margin: 5px 0;
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: #f8f8f2;
+  overflow-x: auto;
+  width: 100%;
+  white-space: pre;
+}

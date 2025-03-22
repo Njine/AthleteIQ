@@ -48,10 +48,16 @@ export interface KeylessAccount {
   salt: string;
   jwt: string;
   decodedJwt: EncryptedScopedIdToken;
+  timestamp?: number;
+  signature?: string;
+  proof_hash?: string;
 }
 
 export interface ZkLoginResponse {
   success: boolean;
+  timestamp?: number;
   message?: string;
-  proof?: any;
+  signature?: string;
+  proof_hash?: string;
+  ethereum_address?: string;
 }

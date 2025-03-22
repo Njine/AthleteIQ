@@ -1,0 +1,36 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/YourContract.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.17;\n\n/**\n * @title ZkLoginAuth\n * @dev Simplified contract for verifying user authentication via signatures\n */\ncontract ZkLoginAuth {\n    // Private trusted verifier address\n    address private immutable trustedVerifier = 0x00AC976b0756EC2dd9935f55e0294C24FCa8DF46;\n    uint256 public constant TIME_WINDOW = 20 minutes;\n    \n    event LoginAttempt(address indexed user, bool success, uint256 timestamp);\n    event LoginSuccess(address indexed user, string message);\n    \n    /**\n     * @dev Verify user authentication with pre-formatted message components\n     * @param timestamp Timestamp of the authentication attempt\n     * @param proofHash Hash of the proof\n     * @param userAddress Address of the user attempting to log in\n     * @param signature Signature produced by the trusted verifier\n     * @return True if authentication is successful\n     */\n    function verifyLogin(\n        uint256 timestamp,\n        string calldata proofHash,\n        address userAddress,\n        bytes calldata signature\n    ) external returns (string memory) {\n        // Check if timestamp is valid (not expired)\n        require(block.timestamp - timestamp <= TIME_WINDOW, \"Timestamp expired\");\n        \n        // Recreate message from inputs (assuming proper formatting)\n        string memory message = string(\n            abi.encodePacked(\n                timestamp,\n                \":\",\n                proofHash,\n                \":\",\n                userAddress\n            )\n        );\n        \n        // Hash the message using keccak256\n        bytes32 messageHash = keccak256(bytes(message));\n        \n        // Prefix the hash (mimics ethers.hashMessage)\n        bytes32 prefixedHash = keccak256(\n            abi.encodePacked(\"\\x19Ethereum Signed Message:\\n32\", messageHash)\n        );\n        \n        // Recover signer from signature\n        address recoveredSigner = recoverSigner(prefixedHash, signature);\n        \n        // Check conditions: valid signer and user address matches sender\n        bool isValidSigner = (recoveredSigner == trustedVerifier);\n        // bool isValidUser = (msg.sender == userAddress);\n        bool success = isValidSigner;\n        \n        emit LoginAttempt(userAddress, success, block.timestamp);\n        \n        if (success) {\n            // Emit an event that includes both the address and a success message\n            emit LoginSuccess(userAddress, \"success\");\n            return \"success\";\n        } else {\n            return \"failure\";\n        }\n    }\n    \n    /**\n     * @dev Recover signer address from signature\n     * @param _hash Hashed message\n     * @param _signature Signature bytes\n     * @return Recovered address\n     */\n    function recoverSigner(bytes32 _hash, bytes calldata _signature) internal pure returns (address) {\n        require(_signature.length == 65, \"Invalid signature length\");\n        \n        bytes32 r;\n        bytes32 s;\n        uint8 v;\n        \n        assembly {\n            // Extract r, s, v from the signature\n            // IMPORTANT: We need to add 32 to the pointer to skip the length field of the bytes array\n            r := calldataload(_signature.offset)\n            s := calldataload(add(_signature.offset, 32))\n            // For v, we load 32 bytes and then extract the first byte\n            v := byte(0, calldataload(add(_signature.offset, 64)))\n        }\n        \n        // Version of signature should be 27 or 28, but some wallets use 0 or 1\n        if (v < 27) {\n            v += 27;\n        }\n        \n        return ecrecover(_hash, v, r, s);\n    }\n}"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "paris",
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
