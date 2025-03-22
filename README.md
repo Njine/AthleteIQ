@@ -15,11 +15,13 @@
 ![Screenshot 3](.res/s3.png)  
 ![Screenshot 4](.res/s4.png)  
 ![Screenshot 5](.res/s5.png)  
-![Screenshot 6](.res/s6.png)  
 ![Screenshot 7](.res/s7.png)  
+![Screenshot 6](.res/s6.png)  
 
 # Expander Zklogin Worflow
 - code in `Backend/zkp_login/src/main.rs`
+![Screenshot 7](.res/Workflow.png)  
+
 ### Off chain Client aka Frontend [.ts]
 - get JWT from OCID
 - Decode JWT
