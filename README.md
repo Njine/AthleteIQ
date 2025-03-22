@@ -50,6 +50,9 @@
 - check (client address) == (proof address)
 - True? allow signin
 
+## Contract
+- live at [sepolia.etherscan.io/address/0x00EA3c8270868B9cF9C24a5E78cACDa9DfE8B485](https://sepolia.etherscan.io/address/0x00EA3c8270868B9cF9C24a5E78cACDa9DfE8B485)
+- code: `Contracts/packages/hardhat/contracts/YourContract.sol`
 ## Features
 ### 1. Athlete Profile Management
 - Decentralized athlete profiles.

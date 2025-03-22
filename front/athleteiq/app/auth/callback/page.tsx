@@ -17,10 +17,12 @@ const CONTRACT_ABI = [
 export default function CallbackPage() {
   const isLoading = useRef(false)
   const [loadingStep, setLoadingStep] = useState(0)
-  const [progress, setProgress] = useState(0)
+  const [progress, setProgress] = useState(5) // Start at 5% for better UX
   const [error, setError] = useState<string | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
   const [redirectCountdown, setRedirectCountdown] = useState(3)
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const startTimeRef = useRef<number>(Date.now())
   const switchKeylessAccount = useKeylessAccounts((state) => state.switchKeylessAccount)
   const activeAccount = useKeylessAccounts((state) => state.activeAccount)
   const disconnectKeylessAccount = useKeylessAccounts((state) => state.disconnectKeylessAccount)
@@ -34,10 +36,70 @@ export default function CallbackPage() {
     { message: "Verification successful!", duration: 2000 },
   ]
 
+  // Function to smoothly animate progress
+  const animateProgress = (fromValue: number, toValue: number, duration: number) => {
+    // Clear any existing interval
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current)
+    }
+
+    const startTime = Date.now()
+    const startValue = fromValue
+    const changeInValue = toValue - fromValue
+
+    progressIntervalRef.current = setInterval(() => {
+      const elapsedTime = Date.now() - startTime
+      const progress = Math.min(elapsedTime / duration, 1)
+
+      // Easing function for smoother animation
+      const easedProgress = easeInOutCubic(progress)
+      const newValue = startValue + changeInValue * easedProgress
+
+      setProgress(Math.round(newValue))
+
+      if (progress >= 1) {
+        if (progressIntervalRef.current) {
+          clearInterval(progressIntervalRef.current)
+        }
+      }
+    }, 16) // ~60fps
+  }
+
+  // Easing function for smoother animation
+  const easeInOutCubic = (t: number): number => {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+  }
+
+  // Update progress when loading step changes
   useEffect(() => {
-    // Update progress when loading step changes
-    if (loadingStep > 0) {
-      setProgress(Math.max(loadingStep * 25, progress))
+    if (loadingStep === 0) {
+      // First step - animate from 5% to 20%
+      animateProgress(5, 20, loadingSteps[0].duration)
+    } else if (loadingStep < loadingSteps.length) {
+      // Calculate progress ranges for each step
+      const stepRanges = [
+        { min: 5, max: 25 }, // Step 0: 5-25%
+        { min: 25, max: 50 }, // Step 1: 25-50%
+        { min: 50, max: 90 }, // Step 2: 50-90%
+        { min: 90, max: 100 }, // Step 3: 90-100%
+      ]
+
+      const currentRange = stepRanges[loadingStep]
+      const prevRange = stepRanges[loadingStep - 1]
+
+      // Animate from previous step's max to current step's min immediately
+      setProgress(currentRange.min)
+
+      // Then animate to the current step's max over the duration
+      setTimeout(() => {
+        animateProgress(currentRange.min, currentRange.max, loadingSteps[loadingStep].duration)
+      }, 50)
+    }
+
+    return () => {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current)
+      }
     }
   }, [loadingStep])
 
@@ -45,6 +107,7 @@ export default function CallbackPage() {
     // This is a workaround to prevent firing twice due to strict mode
     if (isLoading.current) return
     isLoading.current = true
+    startTimeRef.current = Date.now()
 
     // Function to extract the id_token from URL fragment
     const getIdTokenFromHash = () => {
@@ -160,40 +223,21 @@ export default function CallbackPage() {
         disconnectKeylessAccount()
         console.error("Authentication error:", error)
         setError(`Authentication failed: ${error instanceof Error ? error.message : String(error)}`)
+        // Stop progress animation and set error state
+        if (progressIntervalRef.current) {
+          clearInterval(progressIntervalRef.current)
+        }
         // Optionally redirect to login after a delay
         setTimeout(() => router.push("/login"), 3000)
       }
     }
 
-    // Simpler progress bar animation that works reliably
-    const startTime = Date.now()
-    const totalDuration = loadingSteps.reduce((acc, step) => acc + step.duration, 0)
-
-    const progressInterval = setInterval(() => {
-      const elapsedTime = Date.now() - startTime
-      const calculatedProgress = Math.min(Math.floor((elapsedTime / totalDuration) * 100), 99)
-
-      // Force progress to match loading step if it's behind
-      const minimumProgress = loadingStep * 25
-      const newProgress = Math.max(calculatedProgress, minimumProgress)
-
-      // Set to 100% when we reach the final step
-      if (loadingStep === loadingSteps.length - 1) {
-        setProgress(100)
-      } else if (!error) {
-        setProgress(newProgress)
-      }
-
-      // Clear interval when done
-      if (newProgress >= 100 || error) {
-        clearInterval(progressInterval)
-      }
-    }, 50)
-
     handleLogin()
 
     return () => {
-      clearInterval(progressInterval)
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current)
+      }
     }
   }, [router, switchKeylessAccount, loadingSteps])
 
