@@ -1,11 +1,17 @@
+use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use actix_cors::Cors;
+use serde::{Deserialize, Serialize};
+use std::sync::Mutex;
+
 use ethers::core::k256::ecdsa::SigningKey;
 use ethers::signers::{LocalWallet, Signer};
 use ethers::core::k256::SecretKey;
 use expander_compiler::frontend::*;
-use extra::*;
+// use extra::*;
 use keccak_hash::keccak;
 use blake2::{Blake2s256, Digest};
 use hex;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 
 fn rc() -> Vec<u64> {
@@ -246,7 +252,7 @@ fn keccak_to_eth_address_hint(hash: &[GF2], address: &mut [GF2]) -> Result<(), E
     let private_key = SecretKey::from_slice(&hash_bytes).expect("Failed to generate valid private key");
     let wallet = LocalWallet::from(SigningKey::from(private_key));
     let eth_address = wallet.address();
-    println!("Ethereum Hint Address: {}", hex::encode(&eth_address));
+    // println!("Ethereum Hint Address: {}", hex::encode(&eth_address));
     
     let address_bytes = eth_address.as_bytes();
     for i in 0..20 {
@@ -270,145 +276,13 @@ fn hash_to_private_key(hash: [u8; 32]) -> SecretKey {
 fn generate_wallet(hash: [u8; 32]) -> [u8; 20] {
     // Convert seed to a private key
     let private_key = hash_to_private_key(hash);
-    println!("SecretKey (hex): {}", hex::encode(private_key.to_bytes()));
+    // println!("SecretKey (hex): {}", hex::encode(private_key.to_bytes()));
 
 
     // Create an Ethereum wallet
     let wallet = LocalWallet::from(SigningKey::from(private_key));
 
     wallet.address().into()
-}
-
-fn main() {
-    let mut hint_registry = HintRegistry::<GF2>::new();
-    hint_registry.register("myhint.hi", keccak_to_eth_address_hint);
-
-    let compile_result = compile(&ZkLoginCircuit::default(), CompileOptions::default()).unwrap();
-
-    // inputs
-    let sub = "10985";
-    let email = "tqwqd@gmail.com";
-    let aud = "61k6v.apps.googleusercontent.com";
-    let salt = "a21d371b87d8e";
-
-    // goal input 64 byte hash to circuit
-    // hash the inputs using blake into 32 byte hash => hash1
-    // hash the (inputs + salt) again using blake into 32 byte hash => hash2
-    // combine hash1 + hash2 => 64 byte hash
-    let mut hash_1 = Blake2s256::new();
-    hash_1.update(sub.as_bytes());
-    hash_1.update(email.as_bytes());
-    hash_1.update(aud.as_bytes());
-    hash_1.update(salt.as_bytes());
-    let hash1 = hash_1.finalize();
-    println!("Orginal hash1: {}", hex::encode(&hash1));
-
-    let mut hash_2 = Blake2s256::new();
-    hash_2.update(salt.as_bytes());
-    hash_2.update(email.as_bytes());
-    hash_2.update(aud.as_bytes());
-    hash_2.update(sub.as_bytes());
-    hash_2.update(salt.as_bytes());
-    let hash2 = hash_2.finalize();
-    println!("Orginal hash2: {}", hex::encode(&hash2));
-
-    // combine
-    let mut final_hash = [0u8; 64];
-    final_hash[..32].copy_from_slice(&hash1);
-    final_hash[32..].copy_from_slice(&hash2);
-    println!("Final Orginal hash: {}", hex::encode(&final_hash));
-
-    let output: [u8; 32] = keccak(&final_hash).into();
-    println!("keccak: {}", hex::encode(&output));
-
-    // Generate wallet address from keccak256
-    let address = generate_wallet(output);
-
-    println!("Ethereum Address: {}", hex::encode(&address));
-
-    let input_bits = bytes_to_bits_64(&final_hash, 64); // raw blake
-
-    let output_bits = bytes_to_bits_20(&address, 20);
-
-    let assignment = ZkLoginCircuit::<GF2> {
-        input: input_bits,
-        output: output_bits,
-    };
-
-    let assignments = vec![assignment.clone(); 8];
-
-    let witness = compile_result
-        .witness_solver
-        .solve_witnesses_with_hints(&assignments, &mut hint_registry)
-        .unwrap();
-
-    let output = compile_result.layered_circuit.run(&witness);
-    // debug_eval(&ZkLoginCircuit::default(), &assignment, HintCaller::new(&debug_hint_registry));
-
-    println!("Circuit validation result: {:?}", output);
-
-    if output[0] {
-        println!("✅ Success! The circuit correctly validated the Ethereum address.");
-        // gen proof
-        
-    } else {
-        println!("❌ Failure! The circuit rejected the provided data.");
-    }
-
-    let file = std::fs::File::create("circuit_zklogin.txt").unwrap();
-    let writer = std::io::BufWriter::new(file);
-    compile_result.layered_circuit.serialize_into(writer).unwrap();
-
-    let file = std::fs::File::create("witness_zklogin.txt").unwrap();
-    let writer = std::io::BufWriter::new(file);
-    witness.serialize_into(writer).unwrap();
-    println!("dumped to files");
-
-
-    let mut expected_res = vec![true; 8];
-    for i in 0..4 {
-        expected_res[i * 2] = true;
-    }
-    assert_eq!(output, expected_res);
-    println!("passed");
-
-    // alternatively, you can specify the particular config like gkr_field_config::GF2ExtConfig
-    let mut expander_circuit = compile_result.layered_circuit.export_to_expander_flatten();
-
-    let config = GF2Config::new_expander_config();
-
-    let (simd_input, simd_public_input) = witness.to_simd();
-    println!("{} {}", simd_input.len(), simd_public_input.len());
-    expander_circuit.layers[0].input_vals = simd_input;
-    expander_circuit.public_input = simd_public_input.clone();
-
-    // prove
-    expander_circuit.evaluate();
-    let (claimed_v, proof) = gkr::executor::prove(&mut expander_circuit, &config);
-
-    // verify
-    assert!(gkr::executor::verify(
-        &mut expander_circuit,
-        &config,
-        &proof,
-        &claimed_v
-    ));
-
-
-    let proof_data = gkr::executor::dump_proof_and_claimed_v(&proof, &claimed_v).unwrap();
-
-    let mut blake_hasher = Blake2s256::new();
-    blake_hasher.update(&proof_data);
-    let blake_hash = blake_hasher.finalize();
-    println!("Blake2s256 hash of proof data: {}", hex::encode(&blake_hash));
-
-    use std::fs::File;
-    use std::io::Write;
-    let mut file = File::create("proof.txt").unwrap();
-    file.write_all(&proof_data).unwrap();
-    println!("Proof data written to proof.txt");
-
-
 }
 
 fn bytes_to_bits_20(bytes: &[u8], num_bytes: usize) -> [GF2; 20 * 8] {
@@ -436,4 +310,215 @@ fn bytes_to_bits_64(bytes: &[u8], num_bytes: usize) -> [GF2; 64 * 8] {
     }
 
     result
+}
+
+
+// Shared state to store the compiled circuit
+struct AppState {
+    compiled_circuit: Mutex<CompileResult<GF2Config>>,
+}
+
+
+
+// Request/response structures
+#[derive(Deserialize)]
+struct ZkLoginRequest {
+    sub: String,
+    email: String,
+    aud: String,
+    salt: String,
+}
+
+#[derive(Serialize)]
+struct ZkLoginResponse {
+    success: bool,
+    ethereum_address: String,
+    proof_hash: String,
+    timestamp: u64,
+    signature: String,
+    message: String,
+}
+
+
+// Initialize the circuit once during server startup
+fn initialize_circuit() -> CompileResult<GF2Config> {
+    let mut hint_registry = HintRegistry::<GF2>::new();
+    hint_registry.register("myhint.hi", keccak_to_eth_address_hint);
+    
+    let compile_result = compile(&ZkLoginCircuit::default(), CompileOptions::default()).unwrap();
+    
+    compile_result
+}
+
+#[derive(Serialize)]
+struct ErrorResponse {
+    error: String,
+}
+
+
+async fn generate_proof(
+    data: web::Json<ZkLoginRequest>,
+    app_state: web::Data<AppState>,
+) -> impl Responder {
+    
+    if data.sub.is_empty() || data.email.is_empty() || data.aud.is_empty() || data.salt.is_empty() {
+        return HttpResponse::NotFound()
+        .json(ErrorResponse { 
+            error: "Access denied: Missing required fields".to_string() 
+            });
+        }
+        
+    let request = data.into_inner();
+    
+    // Hash the inputs using Blake2s (as in your original code)
+    let mut hash_1 = Blake2s256::new();
+    hash_1.update(request.sub.as_bytes());
+    hash_1.update(request.email.as_bytes());
+    hash_1.update(request.aud.as_bytes());
+    hash_1.update(request.salt.as_bytes());
+    let hash1 = hash_1.finalize();
+
+    let mut hash_2 = Blake2s256::new();
+    hash_2.update(request.salt.as_bytes());
+    hash_2.update(request.email.as_bytes());
+    hash_2.update(request.aud.as_bytes());
+    hash_2.update(request.sub.as_bytes());
+    hash_2.update(request.salt.as_bytes());
+    let hash2 = hash_2.finalize();
+
+    // Combine hashes
+    let mut final_hash = [0u8; 64];
+    final_hash[..32].copy_from_slice(&hash1);
+    final_hash[32..].copy_from_slice(&hash2);
+    
+    let output: [u8; 32] = keccak(&final_hash).into();
+    
+    // Generate wallet address from keccak256
+    let address = generate_wallet(output);
+    let address_hex = hex::encode(&address);
+    
+    // Convert bytes to bits for the circuit
+    let input_bits = bytes_to_bits_64(&final_hash, 64);
+    let output_bits = bytes_to_bits_20(&address, 20);
+    
+    let assignment = ZkLoginCircuit::<GF2> {
+        input: input_bits,
+        output: output_bits,
+    };
+    
+    let assignments = vec![assignment.clone(); 8];
+    
+    // Access the shared circuit and hint registry
+    let compile_result = &app_state.compiled_circuit.lock().unwrap();
+
+    let mut hint_registry = HintRegistry::<GF2>::new();
+    hint_registry.register("myhint.hi", keccak_to_eth_address_hint);
+    
+    
+    // Generate witness and proof
+    let witness = compile_result
+        .witness_solver
+        .solve_witnesses_with_hints(&assignments, &mut hint_registry)
+        .unwrap();
+    
+    let output = compile_result.layered_circuit.run(&witness);
+    
+    // Export to expander flatten
+    let mut expander_circuit = compile_result.layered_circuit.export_to_expander_flatten();
+    let config = GF2Config::new_expander_config();
+    
+    let (simd_input, simd_public_input) = witness.to_simd();
+    expander_circuit.layers[0].input_vals = simd_input;
+    expander_circuit.public_input = simd_public_input.clone();
+    
+    // Generate proof
+    expander_circuit.evaluate();
+    let (claimed_v, proof) = gkr::executor::prove(&mut expander_circuit, &config);
+    
+    // Get proof data
+    let proof_data = gkr::executor::dump_proof_and_claimed_v(&proof, &claimed_v).unwrap();
+    
+    // Hash the proof
+    let mut blake_hasher = Blake2s256::new();
+    blake_hasher.update(&proof_data);
+    let blake_hash = blake_hasher.finalize();
+    let proof_hash = hex::encode(&blake_hash);
+    
+    // Get current timestamp
+    let timestamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards")
+        .as_secs();
+    
+    // Create message to sign: (timestamp, proof_hash, address)
+    let message = format!("{}:{}:0x{}", timestamp, proof_hash, address_hex);
+
+    // Sign the message with the wallet
+    let key: [u8; 32] = hex::decode("4c0883a69102937d6231471b5dbb6204fe512961708279826f9569e293e3837e").expect("Invalid hex private key").try_into().expect("Private key must be 32 bytes");
+    let priv_key =  hash_to_private_key(key);
+    let wallet = LocalWallet::from(SigningKey::from(priv_key));
+    let message_hash = keccak(message.as_bytes());
+    let signature = wallet.sign_message(message_hash).await.unwrap();
+    let signature_hex = format!("0x{}", hex::encode(signature.to_vec()));
+    // println!("msg: {:?}\nhash: {:?}\nSign: {:?}\n", message, message_hash, signature_hex);
+    
+    // Return JSON response with the signature
+    HttpResponse::Ok().json(ZkLoginResponse {
+        success: output[0],
+        ethereum_address: address_hex,
+        proof_hash,
+        timestamp,
+        message,
+        signature: signature_hex,
+    })
+}
+
+
+async fn options_handler() -> impl Responder {
+    HttpResponse::Ok()
+        .append_header(("Access-Control-Allow-Origin", "*"))
+        .append_header(("Access-Control-Allow-Methods", "POST, OPTIONS"))
+        .append_header(("Access-Control-Allow-Headers", "*"))
+        .finish()
+}
+
+async fn index() -> impl Responder {
+    HttpResponse::Ok().body("nothing to see here")
+}
+
+async fn ping() -> impl Responder {
+    HttpResponse::Ok()
+}
+
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    // Initialize circuit only once
+    let compile_result = initialize_circuit();
+    
+    // Create shared application state
+    let app_state = web::Data::new(AppState {
+        compiled_circuit: Mutex::new(compile_result),
+    });
+    
+    println!("Server starting at http://127.0.0.1:8080");
+    
+    // Start HTTP server
+    HttpServer::new(move || {
+        App::new()
+            .app_data(app_state.clone())
+            .wrap(
+                Cors::default()
+                    .allow_any_origin()
+                    .allowed_methods(vec!["GET", "POST", "OPTIONS"])
+                    .allowed_headers(vec!["Content-Type"])
+            )
+            .route("/api/zklogin", web::post().to(generate_proof))
+            .route("/api/zklogin", web::method(actix_web::http::Method::OPTIONS).to(options_handler))
+            .route("/", web::get().to(index))
+            .route("/live", web::get().to(ping))
+    })
+    .bind("0.0.0.0:8080")?
+    .run()
+    .await
 }
